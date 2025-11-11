@@ -107,28 +107,18 @@ const TestimonialCard = ({ testimonial, index }: { testimonial: typeof testimoni
 );
 
 const TestimonialSection = () => {
-  const row1Ref = useRef<HTMLDivElement>(null);
-  const row2Ref = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!row1Ref.current || !row2Ref.current) return;
+    if (!rowRef.current) return;
 
-    // Infinite scroll animation for row 1 (left to right)
-    gsap.to(row1Ref.current, {
+    // Infinite scroll animation (left to right)
+    gsap.to(rowRef.current, {
       x: "-50%",
-      duration: 40,
+      duration: 50,
       ease: "none",
       repeat: -1,
-    });
-
-    // Infinite scroll animation for row 2 (right to left)
-    gsap.to(row2Ref.current, {
-      x: "0%",
-      duration: 40,
-      ease: "none",
-      repeat: -1,
-      from: { x: "-50%" }
     });
 
     // Section fade in on scroll
@@ -151,9 +141,6 @@ const TestimonialSection = () => {
     }
   }, []);
 
-  const firstRow = testimonials.slice(0, 4);
-  const secondRow = testimonials.slice(4, 8);
-
   return (
     <section ref={sectionRef} className="py-20 bg-gradient-to-b from-background via-accent/5 to-background overflow-hidden">
       <div className="container mx-auto px-4 mb-12">
@@ -166,35 +153,21 @@ const TestimonialSection = () => {
             Join 50,000+ Smart Indians
           </h2>
           <p className="text-xl text-muted-foreground">
-            Discover how everyday people are saving thousands every year with the right credit cards
+            See how real people are transforming their finances with smarter credit card choices
           </p>
         </div>
       </div>
 
-      {/* Double-decker horizontal scroll */}
+      {/* Single horizontal scroll */}
       <div className="relative">
-        {/* Row 1 */}
-        <div className="mb-6 overflow-hidden">
-          <div 
-            ref={row1Ref}
-            className="flex gap-6"
-            style={{ width: "200%" }}
-          >
-            {[...firstRow, ...firstRow].map((testimonial, index) => (
-              <TestimonialCard key={`row1-${index}`} testimonial={testimonial} index={index} />
-            ))}
-          </div>
-        </div>
-
-        {/* Row 2 */}
         <div className="overflow-hidden">
           <div 
-            ref={row2Ref}
+            ref={rowRef}
             className="flex gap-6"
             style={{ width: "200%" }}
           >
-            {[...secondRow, ...secondRow].map((testimonial, index) => (
-              <TestimonialCard key={`row2-${index}`} testimonial={testimonial} index={index} />
+            {[...testimonials, ...testimonials].map((testimonial, index) => (
+              <TestimonialCard key={`testimonial-${index}`} testimonial={testimonial} index={index} />
             ))}
           </div>
         </div>

@@ -52,13 +52,13 @@ const MidPageCTA = () => {
 
           <div className="relative z-10 text-center">
             <h2 className="text-4xl lg:text-5xl font-bold mb-4">
-              Still scrolling?
+              Wait, Are You Still Deciding?
             </h2>
             <p className="text-xl mb-2 opacity-90">
-              Your perfect card is one click away.
+              While you scroll, others are already saving money with the perfect card.
             </p>
             <p className="text-lg mb-8 opacity-75">
-              <span className="font-bold text-2xl">{userCount.toLocaleString()}</span> people found their ideal card today. Your turn!
+              <span className="font-bold text-2xl">{userCount.toLocaleString()}</span> smart Indians discovered their ideal card today. Join them.
             </p>
 
             <Link to="/cards">

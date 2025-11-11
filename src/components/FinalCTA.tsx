@@ -16,13 +16,13 @@ const FinalCTA = () => {
 
           {/* Heading */}
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Ready to Find Your Perfect Credit Card?
+            Your Money Deserves to Work Harder
           </h2>
 
           {/* Subheading */}
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Compare hundreds of credit cards, check your eligibility, and apply online in minutes. 
-            Get expert recommendations tailored to your spending habits.
+            Stop leaving thousands on the table. Find cards that actually match how you spend. 
+            Compare, choose, and start saving—all in minutes, not hours.
           </p>
 
           {/* Stats */}
