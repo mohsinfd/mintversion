@@ -1,10 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import { ShoppingBag, Utensils, Fuel, Plane, Coffee, ShoppingCart, CreditCard, ChevronDown, TrendingUp, Sparkles } from "lucide-react";
+import { ShoppingBag, Utensils, Fuel, Plane, Coffee, ShoppingCart, CreditCard, ChevronDown, TrendingUp, Sparkles, Loader2 } from "lucide-react";
 import { cardService, SpendingData } from "@/services/cardService";
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
 import { SpendingInput } from "./ui/spending-input";
+
+const creditCardFacts = [
+  "💳 The first credit card was introduced in 1950 by Diners Club!",
+  "🌟 Cashback rewards can save you thousands annually if used smartly",
+  "✈️ Travel cards can get you free flights worth lakhs every year",
+  "🛡️ Credit cards offer better fraud protection than debit cards",
+  "💰 Premium cards often pay for themselves through benefits alone",
+  "🎁 Welcome bonuses can be worth ₹10,000+ on premium cards",
+  "⚡ Using 30% or less of your credit limit boosts your credit score",
+  "🏨 Hotel cards can save you up to 50% on premium stays",
+  "🍽️ Dining cards offer up to 20% savings on restaurant bills",
+  "⛽ Fuel surcharge waivers can save ₹4,000+ annually",
+  "📱 Contactless payments are 10x faster than cash transactions",
+  "🎯 Category-specific cards can give 5-10% returns on spending",
+  "💎 Airport lounge access saves ₹2,000+ per visit",
+  "🔒 EMI conversions at 0% interest can save huge amounts",
+  "🎊 Milestone benefits reward you for regular spending",
+  "🌐 International cards save 3-5% on forex markup fees",
+  "⭐ Co-branded cards offer exclusive brand discounts up to 30%",
+  "🎪 Entertainment cards get you buy-1-get-1 movie tickets",
+  "💡 Smart card users save an average of ₹50,000+ yearly",
+  "🚀 The right card can turn everyday spending into wealth!"
+];
 
 const categories = [
   { 
@@ -88,6 +111,17 @@ const CategoryCardGenius = () => {
   const [responses, setResponses] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [currentFactIndex, setCurrentFactIndex] = useState(0);
+
+  // Rotate facts during loading
+  useEffect(() => {
+    if (loading) {
+      const interval = setInterval(() => {
+        setCurrentFactIndex((prev) => (prev + 1) % creditCardFacts.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [loading]);
 
   const selectedCategoryData = categories.find(c => c.id === selectedCategory);
   const currentQuestion = selectedCategoryData?.questions[currentQuestionIndex];
@@ -119,6 +153,7 @@ const CategoryCardGenius = () => {
 
   const handleCalculate = async () => {
     setLoading(true);
+    setCurrentFactIndex(0);
     try {
       // Prepare the payload with all fields set to 0 except user inputs
       const payload: SpendingData = {
@@ -376,6 +411,24 @@ const CategoryCardGenius = () => {
               </Button>
             </div>
           </div>
+        ) : loading ? (
+          /* Loading State with Fun Facts */
+          <div className="max-w-2xl mx-auto text-center animate-fade-in">
+            <div className="bg-card rounded-3xl p-12 shadow-2xl border-2 border-primary/20">
+              <div className="mb-8">
+                <Loader2 className="w-16 h-16 mx-auto text-primary animate-spin" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Crunching the numbers...</h3>
+              <p className="text-muted-foreground mb-8">
+                Our AI is analyzing thousands of card combinations to find your perfect match
+              </p>
+              <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-6 min-h-[100px] flex items-center justify-center">
+                <p className="text-lg font-medium text-foreground animate-fade-in">
+                  {creditCardFacts[currentFactIndex]}
+                </p>
+              </div>
+            </div>
+          </div>
         ) : showQuestions && selectedCategoryData && currentQuestion ? (
           /* Questions Section */
           <div className="max-w-3xl mx-auto animate-fade-in">
@@ -425,12 +478,7 @@ const CategoryCardGenius = () => {
                 disabled={loading}
                 className="flex-1 shadow-lg"
               >
-                {loading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Calculating...
-                  </div>
-                ) : currentQuestionIndex === selectedCategoryData.questions.length - 1 ? (
+                {currentQuestionIndex === selectedCategoryData.questions.length - 1 ? (
                   <>
                     Show My Results
                     <Sparkles className="ml-2 w-4 h-4" />

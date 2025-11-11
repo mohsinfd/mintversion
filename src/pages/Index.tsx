@@ -4,6 +4,8 @@ import BankCarousel from "@/components/BankCarousel";
 import PopularCreditCards from "@/components/PopularCreditCards";
 import CategoryCardGenius from "@/components/CategoryCardGenius";
 import MidPageCTA from "@/components/MidPageCTA";
+import TestimonialSection from "@/components/TestimonialSection";
+import BlogSection from "@/components/BlogSection";
 import FinalCTA from "@/components/FinalCTA";
 
 const Index = () => {
@@ -15,6 +17,8 @@ const Index = () => {
       <PopularCreditCards />
       <CategoryCardGenius />
       <MidPageCTA />
+      <TestimonialSection />
+      <BlogSection />
       <FinalCTA />
       
       {/* Footer */}
