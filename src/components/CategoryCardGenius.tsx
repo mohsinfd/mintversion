@@ -88,7 +88,6 @@ const CategoryCardGenius = () => {
   const [responses, setResponses] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
-  const [showResults, setShowResults] = useState(false);
 
   const selectedCategoryData = categories.find(c => c.id === selectedCategory);
   const currentQuestion = selectedCategoryData?.questions[currentQuestionIndex];
@@ -99,7 +98,6 @@ const CategoryCardGenius = () => {
     setCurrentQuestionIndex(0);
     setResponses({});
     setResults(null);
-    setShowResults(false);
   };
 
   const handleNext = () => {
@@ -155,7 +153,6 @@ const CategoryCardGenius = () => {
         ).slice(0, 3);
         
         setResults(sortedCards);
-        setShowResults(true);
       }
     } catch (error) {
       console.error('Error calculating:', error);
@@ -170,212 +167,16 @@ const CategoryCardGenius = () => {
     setCurrentQuestionIndex(0);
     setResponses({});
     setResults(null);
-    setShowResults(false);
   };
 
-  if (showResults && results) {
-    return (
-      <section className="py-20 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4">
-              <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-semibold">Your Personalized Results</span>
-            </div>
-            <h2 className="text-4xl font-bold mb-4">Top 3 Cards Just For You</h2>
-            <p className="text-xl text-muted-foreground">
-              Based on your {selectedCategoryData?.name.toLowerCase()} spending, here are your best matches
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {results.map((card: any, index: number) => (
-              <div
-                key={card.id || index}
-                className="bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-primary/20"
-              >
-                {index === 0 && (
-                  <div className="bg-gradient-to-r from-primary to-secondary text-white text-center py-2 text-sm font-bold">
-                    🏆 Best Match
-                  </div>
-                )}
-                
-                <div className="relative h-56 overflow-hidden bg-gradient-to-br from-muted to-muted/50">
-                  <img
-                    src={card.card_bg_image}
-                    alt={card.card_name}
-                    className="w-full h-full object-contain p-6"
-                  />
-                </div>
-
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-4">{card.card_name}</h3>
-
-                  {/* Savings Highlight */}
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 mb-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <TrendingUp className="w-5 h-5 text-green-600" />
-                      <span className="text-sm font-semibold text-green-800">Annual Savings</span>
-                    </div>
-                    <p className="text-3xl font-bold text-green-600">
-                      ₹{card.total_savings_yearly?.toLocaleString() || '0'}
-                    </p>
-                    <p className="text-xs text-green-700 mt-1">
-                      Save this much every year with your current spending
-                    </p>
-                  </div>
-
-                  {/* Fees */}
-                  <div className="grid grid-cols-2 gap-3 p-3 bg-muted/50 rounded-lg mb-4">
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">Joining Fee</p>
-                      <p className="font-bold text-sm">
-                        {card.joining_fees === 0 ? 'FREE' : `₹${card.joining_fees?.toLocaleString()}`}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">Annual Fee</p>
-                      <p className="font-bold text-sm">
-                        {card.annual_fees === 0 ? 'FREE' : `₹${card.annual_fees?.toLocaleString()}`}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Category Savings Breakdown */}
-                  {card.category_savings && (
-                    <details className="mb-4">
-                      <summary className="cursor-pointer text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-2">
-                        <ChevronDown className="w-4 h-4" />
-                        View Detailed Savings Breakdown
-                      </summary>
-                      <div className="mt-3 space-y-2 pl-2">
-                        {Object.entries(card.category_savings).map(([category, savings]: [string, any]) => (
-                          <div key={category} className="flex justify-between text-sm">
-                            <span className="text-muted-foreground capitalize">
-                              {category.replace(/_/g, ' ')}
-                            </span>
-                            <span className="font-semibold text-green-600">
-                              ₹{savings?.toLocaleString() || '0'}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </details>
-                  )}
-
-                  <div className="space-y-2">
-                    <Button className="w-full" size="lg">
-                      Apply Now
-                    </Button>
-                    <Button variant="outline" className="w-full" size="sm">
-                      View Full Details
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center">
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={resetCalculator}
-              className="shadow-lg"
-            >
-              Try Another Category
-            </Button>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (showQuestions && selectedCategoryData && currentQuestion) {
-    const progress = ((currentQuestionIndex + 1) / selectedCategoryData.questions.length) * 100;
-
-    return (
-      <section className="py-20 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            {/* Progress */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-semibold text-muted-foreground">
-                  Question {currentQuestionIndex + 1} of {selectedCategoryData.questions.length}
-                </span>
-                <span className="text-sm font-bold text-primary">
-                  {Math.round(progress)}% Complete
-                </span>
-              </div>
-              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-500"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Question */}
-            <div className="animate-fade-in">
-              <SpendingInput
-                question={currentQuestion.question}
-                emoji={currentQuestion.emoji}
-                value={responses[currentQuestion.field] || 0}
-                onChange={(value) => setResponses(prev => ({ ...prev, [currentQuestion.field]: value }))}
-                min={currentQuestion.min}
-                max={currentQuestion.max}
-                step={currentQuestion.step}
-              />
-            </div>
-
-            {/* Navigation */}
-            <div className="flex gap-4 mt-8">
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={handlePrev}
-                disabled={currentQuestionIndex === 0}
-                className="flex-1"
-              >
-                Previous
-              </Button>
-              <Button
-                size="lg"
-                onClick={handleNext}
-                disabled={loading}
-                className="flex-1"
-              >
-                {loading ? (
-                  'Calculating...'
-                ) : currentQuestionIndex === selectedCategoryData.questions.length - 1 ? (
-                  <>
-                    Show My Results
-                    <Sparkles className="ml-2 w-4 h-4" />
-                  </>
-                ) : (
-                  'Next'
-                )}
-              </Button>
-            </div>
-
-            <div className="text-center mt-6">
-              <button
-                onClick={resetCalculator}
-                className="text-muted-foreground hover:text-primary font-medium transition-colors text-sm"
-              >
-                ← Back to Categories
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const getTotalSpending = () => {
+    return Object.values(responses).reduce((sum, val) => sum + val, 0);
+  };
 
   return (
     <section className="py-20 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
       <div className="container mx-auto px-4">
+        {/* Header - Always visible */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4">
             <Sparkles className="w-4 h-4" />
@@ -389,6 +190,7 @@ const CategoryCardGenius = () => {
           </p>
         </div>
 
+        {/* Category Selection - Always visible */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-12">
           {categories.map((category) => (
             <button
@@ -405,26 +207,237 @@ const CategoryCardGenius = () => {
           ))}
         </div>
 
-        <div className="max-w-2xl mx-auto text-center bg-card rounded-2xl p-8 shadow-lg">
-          <p className="text-lg text-muted-foreground mb-6">
-            💡 <strong>How it works:</strong> Pick a category above, answer quick questions about your spending, 
-            and instantly see the top 3 cards that'll save you the most money
-          </p>
-          <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center">1</div>
-              <span>Choose Category</span>
+        {/* Results Section */}
+        {results && results.length > 0 ? (
+          <div className="animate-fade-in">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-6 py-3 rounded-full mb-4 border border-green-200">
+                <TrendingUp className="w-5 h-5" />
+                <span className="font-bold">Your Personalized Results</span>
+              </div>
+              <h3 className="text-3xl font-bold mb-3">Top 3 Cards Just For You</h3>
+              <p className="text-lg text-muted-foreground">
+                Based on your ₹{getTotalSpending().toLocaleString()} monthly {selectedCategoryData?.name.toLowerCase()} spending
+              </p>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center">2</div>
-              <span>Answer Questions</span>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              {results.map((card: any, index: number) => (
+                <div
+                  key={card.id || index}
+                  className="bg-card rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-primary/20 relative"
+                >
+                  {index === 0 && (
+                    <div className="absolute top-4 right-4 z-10">
+                      <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0 px-3 py-1 text-xs font-bold shadow-lg">
+                        🏆 Best Match
+                      </Badge>
+                    </div>
+                  )}
+                  
+                  {/* Card Image */}
+                  <div className="relative h-64 overflow-hidden bg-gradient-to-br from-muted to-muted/50">
+                    <img
+                      src={card.card_bg_image}
+                      alt={card.card_name}
+                      className="w-full h-full object-contain p-8 hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+
+                  <div className="p-6">
+                    {/* Card Name */}
+                    <h3 className="text-xl font-bold mb-4 min-h-[3rem] line-clamp-2">{card.card_name}</h3>
+
+                    {/* Savings Highlight - Prominent */}
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border-2 border-green-300 dark:border-green-700 rounded-xl p-5 mb-4 shadow-md">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <TrendingUp className="w-5 h-5 text-green-600" />
+                          <span className="text-sm font-bold text-green-800 dark:text-green-300">You'll Save</span>
+                        </div>
+                        <Badge variant="secondary" className="text-xs">Per Year</Badge>
+                      </div>
+                      <p className="text-4xl font-black text-green-600 dark:text-green-400 mb-2">
+                        ₹{card.total_savings_yearly?.toLocaleString() || '0'}
+                      </p>
+                      <p className="text-xs text-green-700 dark:text-green-300 font-medium">
+                        💰 That's ₹{Math.round((card.total_savings_yearly || 0) / 12).toLocaleString()} every month with your spending pattern!
+                      </p>
+                    </div>
+
+                    {/* Fees */}
+                    <div className="grid grid-cols-2 gap-3 p-4 bg-muted/50 rounded-lg mb-4">
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Joining Fee</p>
+                        <p className="font-bold text-sm">
+                          {card.joining_fees === 0 || card.joining_fees === '0' ? (
+                            <span className="text-green-600">FREE</span>
+                          ) : (
+                            `₹${card.joining_fees?.toLocaleString()}`
+                          )}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Annual Fee</p>
+                        <p className="font-bold text-sm">
+                          {card.annual_fees === 0 || card.annual_fees === '0' ? (
+                            <span className="text-green-600">FREE</span>
+                          ) : (
+                            `₹${card.annual_fees?.toLocaleString()}`
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Category Savings Breakdown */}
+                    {card.category_savings && Object.keys(card.category_savings).length > 0 && (
+                      <details className="mb-4 bg-muted/30 rounded-lg p-3">
+                        <summary className="cursor-pointer text-sm font-bold text-primary hover:text-primary/80 flex items-center gap-2">
+                          <ChevronDown className="w-4 h-4" />
+                          See Detailed Savings Breakdown
+                        </summary>
+                        <div className="mt-3 space-y-2 pl-2 border-l-2 border-primary/20">
+                          {Object.entries(card.category_savings).map(([category, savings]: [string, any]) => {
+                            const savingsValue = typeof savings === 'number' ? savings : 0;
+                            if (savingsValue === 0) return null;
+                            
+                            return (
+                              <div key={category} className="flex justify-between items-center text-sm py-1">
+                                <span className="text-muted-foreground capitalize font-medium">
+                                  {category.replace(/_/g, ' ')}
+                                </span>
+                                <span className="font-bold text-green-600">
+                                  +₹{savingsValue.toLocaleString()}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </details>
+                    )}
+
+                    {/* CTA Buttons */}
+                    <div className="space-y-2">
+                      <Button className="w-full shadow-lg" size="lg">
+                        Apply Now
+                      </Button>
+                      <Button variant="outline" className="w-full" size="sm">
+                        View Full Details
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center">3</div>
-              <span>Get Top 3 Cards</span>
+
+            <div className="text-center">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={resetCalculator}
+                className="shadow-lg hover:shadow-xl"
+              >
+                Try Another Category
+              </Button>
             </div>
           </div>
-        </div>
+        ) : showQuestions && selectedCategoryData && currentQuestion ? (
+          /* Questions Section */
+          <div className="max-w-3xl mx-auto animate-fade-in">
+            {/* Progress */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold text-muted-foreground">
+                  Question {currentQuestionIndex + 1} of {selectedCategoryData.questions.length}
+                </span>
+                <span className="text-sm font-bold text-primary">
+                  {Math.round(((currentQuestionIndex + 1) / selectedCategoryData.questions.length) * 100)}% Complete
+                </span>
+              </div>
+              <div className="w-full h-3 bg-muted rounded-full overflow-hidden shadow-inner">
+                <div
+                  className="h-full bg-gradient-to-r from-primary via-secondary to-accent transition-all duration-500 shadow-lg"
+                  style={{ width: `${((currentQuestionIndex + 1) / selectedCategoryData.questions.length) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Question */}
+            <SpendingInput
+              question={currentQuestion.question}
+              emoji={currentQuestion.emoji}
+              value={responses[currentQuestion.field] || 0}
+              onChange={(value) => setResponses(prev => ({ ...prev, [currentQuestion.field]: value }))}
+              min={currentQuestion.min}
+              max={currentQuestion.max}
+              step={currentQuestion.step}
+            />
+
+            {/* Navigation */}
+            <div className="flex gap-4 mt-8">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={handlePrev}
+                disabled={currentQuestionIndex === 0}
+                className="flex-1"
+              >
+                Previous
+              </Button>
+              <Button
+                size="lg"
+                onClick={handleNext}
+                disabled={loading}
+                className="flex-1 shadow-lg"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Calculating...
+                  </div>
+                ) : currentQuestionIndex === selectedCategoryData.questions.length - 1 ? (
+                  <>
+                    Show My Results
+                    <Sparkles className="ml-2 w-4 h-4" />
+                  </>
+                ) : (
+                  'Next'
+                )}
+              </Button>
+            </div>
+
+            <div className="text-center mt-6">
+              <button
+                onClick={resetCalculator}
+                className="text-muted-foreground hover:text-primary font-medium transition-colors text-sm"
+              >
+                ← Choose Different Category
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Initial State - Instructions */
+          <div className="max-w-2xl mx-auto text-center bg-card rounded-2xl p-8 shadow-lg">
+            <p className="text-lg text-muted-foreground mb-6">
+              💡 <strong>How it works:</strong> Pick a category above, answer quick questions about your spending, 
+              and instantly see the top 3 cards that'll save you the most money
+            </p>
+            <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground flex-wrap">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-lg">1</div>
+                <span className="font-medium">Choose Category</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-lg">2</div>
+                <span className="font-medium">Answer Questions</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-lg">3</div>
+                <span className="font-medium">Get Top 3 Cards</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
