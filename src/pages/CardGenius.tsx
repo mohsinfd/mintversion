@@ -2,10 +2,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SpendingInput } from "@/components/ui/spending-input";
-import { ArrowLeft, ArrowRight, Sparkles, ChevronDown } from "lucide-react";
+import { ArrowLeft, ArrowRight, Sparkles, ChevronDown, Info } from "lucide-react";
 import { cardService } from "@/services/cardService";
 import type { SpendingData } from "@/services/cardService";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface SpendingQuestion {
   field: string;
@@ -67,12 +73,16 @@ interface CardResult {
   joining_fees: number;
   total_savings: number;
   total_savings_yearly: number;
+  total_extra_benefits: number;
   spending_breakdown: {
     [key: string]: {
+      on: string;
       spend: number;
       points_earned: number;
       savings: number;
-      cashback_percentage?: number;
+      explanation: string[];
+      conv_rate: number;
+      maxCap?: number;
     };
   };
 }
@@ -141,6 +151,7 @@ const CardGenius = () => {
                 joining_fees: cardDetails.data?.annual_fees || 0,
                 total_savings: saving.total_savings || 0,
                 total_savings_yearly: saving.total_savings_yearly || 0,
+                total_extra_benefits: saving.total_extra_benefits || 0,
                 spending_breakdown: saving.spending_breakdown || {}
               };
             } catch (error) {
@@ -150,6 +161,7 @@ const CardGenius = () => {
                 joining_fees: 0,
                 total_savings: saving.total_savings || 0,
                 total_savings_yearly: saving.total_savings_yearly || 0,
+                total_extra_benefits: saving.total_extra_benefits || 0,
                 spending_breakdown: saving.spending_breakdown || {}
               };
             }
@@ -240,7 +252,7 @@ const CardGenius = () => {
                   
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-foreground">Milestone Benefits</span>
-                    <span className="text-lg font-semibold text-foreground">₹0</span>
+                    <span className="text-lg font-semibold text-foreground">₹{selectedCard.total_extra_benefits.toLocaleString()}</span>
                   </div>
                   
                   <div className="flex justify-between items-center">
@@ -252,7 +264,7 @@ const CardGenius = () => {
                   
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-foreground">Your Net Savings</span>
-                    <span className="text-2xl font-bold text-green-600">₹{(selectedCard.total_savings_yearly - selectedCard.joining_fees).toLocaleString()}</span>
+                    <span className="text-2xl font-bold text-green-600">₹{(selectedCard.total_savings_yearly + selectedCard.total_extra_benefits - selectedCard.joining_fees).toLocaleString()}</span>
                   </div>
                 </div>
 
@@ -271,7 +283,7 @@ const CardGenius = () => {
                   return (
                     <button
                       key={category}
-                      className="px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary/90 transition-colors"
+                      className="px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium capitalize"
                     >
                       {category.replace(/_/g, ' ')} Savings
                     </button>
@@ -281,38 +293,72 @@ const CardGenius = () => {
 
               {/* Breakdown Table */}
               <div className="border border-border rounded-lg overflow-hidden">
-                <table className="w-full">
-                  <thead className="bg-muted">
-                    <tr>
-                      <th className="text-left p-4 font-semibold text-sm text-foreground">Savings Breakdown</th>
-                      <th className="text-right p-4 font-semibold text-sm text-foreground">Yearly</th>
-                      <th className="text-right p-4 font-semibold text-sm text-foreground">Monthly</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.entries(selectedCard.spending_breakdown || {}).map(([category, details]) => {
-                      if (!details || !details.spend || details.spend === 0) return null;
-                      return (
-                        <tr key={category} className="border-t border-border">
-                          <td className="p-4">
-                            <div>
-                              <p className="font-medium text-foreground capitalize">{category.replace(/_/g, ' ')}</p>
-                              <p className="text-sm text-muted-foreground">Total Spends: ₹{((details.spend || 0) * 12).toLocaleString()}</p>
-                              <p className="text-sm text-muted-foreground">Points Earned: {((details.points_earned || 0) * 12).toLocaleString()}</p>
+                <div className="flex bg-muted border-b border-border">
+                  <div className="flex-1 p-4">
+                    <div className="font-semibold text-sm text-foreground">Savings Breakdown</div>
+                  </div>
+                  <div className="w-32 p-4 text-center">
+                    <div className="font-semibold text-sm text-foreground">Yearly</div>
+                  </div>
+                  <div className="w-32 p-4 text-center">
+                    <div className="font-semibold text-sm text-foreground">Monthly</div>
+                  </div>
+                </div>
+                
+                {Object.entries(selectedCard.spending_breakdown || {}).map(([category, details]) => {
+                  if (!details || !details.spend || details.spend === 0) return null;
+                  
+                  const yearlySpend = (details.spend || 0) * 12;
+                  const yearlyPoints = (details.points_earned || 0) * 12;
+                  const yearlySavings = (details.savings || 0) * 12;
+                  
+                  return (
+                    <div key={category} className="border-b border-border last:border-b-0">
+                      <div className="flex items-center p-4">
+                        <div className="flex-1">
+                          <p className="font-medium text-foreground capitalize mb-2">{category.replace(/_/g, ' ')}</p>
+                          <div className="space-y-1">
+                            <p className="text-sm text-muted-foreground">
+                              Total Spends: <span className="font-medium text-foreground">₹{yearlySpend.toLocaleString()}</span>
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              Points Earned: <span className="font-medium text-foreground">{yearlyPoints.toLocaleString()}</span>
+                            </p>
+                            {details.conv_rate && (
+                              <p className="text-sm text-muted-foreground">
+                                Conversion Rate: <span className="font-medium text-foreground">₹{details.conv_rate}</span> per point
+                              </p>
+                            )}
+                          </div>
+                          {details.explanation && details.explanation.length > 0 && (
+                            <div className="mt-2 p-3 bg-blue-50 rounded-lg">
+                              <p className="text-xs font-semibold text-primary mb-1">How it's calculated:</p>
+                              {details.explanation.map((exp, idx) => (
+                                <div 
+                                  key={idx} 
+                                  className="text-xs text-foreground"
+                                  dangerouslySetInnerHTML={{ __html: exp }}
+                                />
+                              ))}
                             </div>
-                          </td>
-                          <td className="p-4 text-right font-semibold text-foreground">₹{((details.savings || 0) * 12).toLocaleString()}</td>
-                          <td className="p-4 text-right font-semibold text-foreground">₹{(details.savings || 0).toLocaleString()}</td>
-                        </tr>
-                      );
-                    })}
-                    <tr className="border-t-2 border-border bg-muted">
-                      <td className="p-4 font-bold text-foreground">Total Savings</td>
-                      <td className="p-4 text-right font-bold text-foreground">₹{selectedCard.total_savings_yearly.toLocaleString()}</td>
-                      <td className="p-4 text-right font-bold text-foreground">₹{Math.round(selectedCard.total_savings_yearly / 12).toLocaleString()}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                          )}
+                        </div>
+                        <div className="w-32 text-center">
+                          <span className="font-semibold text-foreground">₹{yearlySavings.toLocaleString()}</span>
+                        </div>
+                        <div className="w-32 text-center">
+                          <span className="font-semibold text-foreground">₹{(details.savings || 0).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                
+                <div className="flex bg-muted p-4 font-bold">
+                  <div className="flex-1 text-foreground">Total Savings</div>
+                  <div className="w-32 text-center text-foreground">₹{selectedCard.total_savings_yearly.toLocaleString()}</div>
+                  <div className="w-32 text-center text-foreground">₹{Math.round(selectedCard.total_savings_yearly / 12).toLocaleString()}</div>
+                </div>
               </div>
             </div>
           </main>
@@ -407,71 +453,121 @@ const CardGenius = () => {
           </div>
 
           {/* Results Table */}
-          <div className="bg-white rounded-xl border border-border overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th className="text-left p-4 font-semibold text-sm text-foreground">Credit Cards</th>
-                    <th className="text-center p-4 font-semibold text-sm text-foreground">Total<br/>Savings</th>
-                    <th className="text-center p-4 font-semibold text-sm text-foreground">Milestone<br/>Benefits</th>
-                    <th className="text-center p-4 font-semibold text-sm text-foreground">Joining<br/>Fees</th>
-                    <th className="text-center p-4 font-semibold text-sm text-foreground">Net<br/>Savings</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {results.map((card, index) => {
-                    const netSavings = card.total_savings_yearly - card.joining_fees;
-                    return (
-                      <tr 
-                        key={index} 
-                        className={`border-t border-border hover:bg-muted/30 transition-colors ${
-                          index === 0 ? 'bg-green-50/50' : ''
-                        }`}
-                      >
-                        <td className="p-4">
-                          <div className="flex items-center gap-4">
-                            {card.card_bg_image && (
-                              <img
-                                src={card.card_bg_image}
-                                alt={card.card_name}
-                                className="w-20 h-12 object-contain"
-                              />
-                            )}
-                            <div>
-                              <p className="font-semibold text-foreground">{card.card_name}</p>
+          <TooltipProvider>
+            <div className="bg-white rounded-xl border border-border overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className="text-left p-4 font-semibold text-sm text-foreground">Credit Cards</th>
+                      <th className="text-center p-4 font-semibold text-sm text-foreground">
+                        <div className="flex items-center justify-center gap-1">
+                          Total Savings
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <p>Total annual savings from rewards, cashback, and points earned on all your spending categories</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </th>
+                      <th className="text-center p-4 font-semibold text-sm text-foreground">
+                        <div className="flex items-center justify-center gap-1">
+                          Milestone Benefits
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <p>Additional benefits like vouchers, reward points, or perks earned by achieving spending milestones</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </th>
+                      <th className="text-center p-4 font-semibold text-sm text-foreground">
+                        <div className="flex items-center justify-center gap-1">
+                          Joining Fees
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <p>Annual or one-time fees charged by the bank for this credit card</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </th>
+                      <th className="text-center p-4 font-semibold text-sm text-foreground">
+                        <div className="flex items-center justify-center gap-1">
+                          Net Savings
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <p>Your actual profit calculated as: Total Savings + Milestone Benefits - Joining Fees</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {results.map((card, index) => {
+                      const netSavings = card.total_savings_yearly + card.total_extra_benefits - card.joining_fees;
+                      return (
+                        <tr 
+                          key={index} 
+                          className={`border-t border-border hover:bg-muted/30 transition-colors ${
+                            index === 0 ? 'bg-green-50/50' : ''
+                          }`}
+                        >
+                          <td className="p-4">
+                            <div className="flex items-center gap-4">
+                              {card.card_bg_image && (
+                                <img
+                                  src={card.card_bg_image}
+                                  alt={card.card_name}
+                                  className="w-20 h-12 object-contain"
+                                />
+                              )}
+                              <div>
+                                <p className="font-semibold text-foreground">{card.card_name}</p>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="p-4 text-center font-semibold text-foreground">
-                          ₹{card.total_savings_yearly.toLocaleString()}
-                        </td>
-                        <td className="p-4 text-center font-semibold text-foreground">
-                          ₹0
-                        </td>
-                        <td className="p-4 text-center font-semibold text-foreground">
-                          ₹{card.joining_fees.toLocaleString()}
-                        </td>
-                        <td className="p-4 text-center">
-                          <div className="flex items-center justify-center gap-2">
-                            <span className="font-bold text-green-600">
-                              ₹{netSavings.toLocaleString()}
-                            </span>
-                            <button
-                              onClick={() => setSelectedCard(card)}
-                              className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors"
-                            >
-                              <ArrowRight className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          </td>
+                          <td className="p-4 text-center font-semibold text-foreground">
+                            ₹{card.total_savings_yearly.toLocaleString()}
+                          </td>
+                          <td className="p-4 text-center font-semibold text-foreground">
+                            ₹{card.total_extra_benefits.toLocaleString()}
+                          </td>
+                          <td className="p-4 text-center font-semibold text-foreground">
+                            ₹{card.joining_fees.toLocaleString()}
+                          </td>
+                          <td className="p-4 text-center">
+                            <div className="flex items-center justify-center gap-2">
+                              <span className="font-bold text-green-600">
+                                ₹{netSavings.toLocaleString()}
+                              </span>
+                              <button
+                                onClick={() => setSelectedCard(card)}
+                                className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors"
+                              >
+                                <ArrowRight className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          </TooltipProvider>
 
           {/* Start Over Button */}
           <div className="mt-8 text-center">
