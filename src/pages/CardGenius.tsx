@@ -284,8 +284,11 @@ const CardGenius = () => {
                         {/* Expanded Breakdown */}
                         {expandedCards.includes(index) && (
                           <div className="mt-4 space-y-3 animate-fade-in">
-                            {Object.entries(card.spending_breakdown).map(([category, details]) => {
-                              if (details.spend === 0) return null;
+                            {Object.entries(card.spending_breakdown || {}).map(([category, details]) => {
+                              // Safety checks for details
+                              if (!details || typeof details !== 'object' || !details.spend || details.spend === 0) {
+                                return null;
+                              }
                               
                               return (
                                 <div key={category} className="p-4 bg-white border border-charcoal-200 rounded-lg">
@@ -295,18 +298,18 @@ const CardGenius = () => {
                                         {category.replace(/_/g, ' ')}
                                       </p>
                                       <p className="text-sm text-charcoal-600">
-                                        Monthly Spend: ₹{details.spend.toLocaleString()}
+                                        Monthly Spend: ₹{(details.spend || 0).toLocaleString()}
                                       </p>
                                     </div>
                                     <div className="text-right">
                                       <p className="font-bold text-green-600">
-                                        ₹{details.savings.toLocaleString()}
+                                        ₹{(details.savings || 0).toLocaleString()}
                                       </p>
                                       <p className="text-xs text-charcoal-500">savings</p>
                                     </div>
                                   </div>
                                   <div className="flex gap-4 text-sm text-charcoal-600">
-                                    <span>Points: {details.points_earned.toLocaleString()}</span>
+                                    <span>Points: {(details.points_earned || 0).toLocaleString()}</span>
                                     {details.cashback_percentage && (
                                       <span>Cashback: {details.cashback_percentage}%</span>
                                     )}
