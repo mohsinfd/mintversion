@@ -7,6 +7,8 @@ import { Search, Filter, X, ArrowUpDown, CheckCircle2, Sparkles, ShoppingBag, Ut
 import { cardService, SpendingData } from "@/services/cardService";
 import { Badge } from "@/components/ui/badge";
 import GeniusDialog from "@/components/GeniusDialog";
+import { CompareToggleIcon } from "@/components/comparison/CompareToggleIcon";
+import { ComparePill } from "@/components/comparison/ComparePill";
 import {
   Sheet,
   SheetContent,
@@ -885,6 +887,9 @@ const CardListing = () => {
         category={filters.category}
         onSubmit={handleGeniusSubmit}
       />
+
+      {/* Comparison Pill */}
+      <ComparePill />
     </div>
   );
 };

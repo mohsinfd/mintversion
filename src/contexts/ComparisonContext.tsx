@@ -1,0 +1,105 @@
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { toast } from 'sonner';
+
+interface ComparisonContextType {
+  selectedCards: any[];
+  maxCompare: number;
+  toggleCard: (card: any) => void;
+  removeCard: (cardId: string) => void;
+  clearAll: () => void;
+  isSelected: (cardId: string) => boolean;
+  canAddMore: boolean;
+}
+
+const ComparisonContext = createContext<ComparisonContextType | undefined>(undefined);
+
+export function ComparisonProvider({ children, maxCompare = 2 }: { children: ReactNode; maxCompare?: number }) {
+  const [selectedCards, setSelectedCards] = useState<any[]>(() => {
+    // Load from localStorage on mount
+    const saved = localStorage.getItem('selectedCards');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Persist to localStorage whenever selection changes
+  useEffect(() => {
+    localStorage.setItem('selectedCards', JSON.stringify(selectedCards));
+  }, [selectedCards]);
+
+  const toggleCard = (card: any) => {
+    const cardId = card.id?.toString() || card.seo_card_alias;
+    
+    if (isSelected(cardId)) {
+      // Remove card
+      setSelectedCards(prev => prev.filter(c => {
+        const cId = c.id?.toString() || c.seo_card_alias;
+        return cId !== cardId;
+      }));
+      toast.success('Card removed from comparison', {
+        description: card.name
+      });
+    } else {
+      // Add card
+      if (selectedCards.length >= maxCompare) {
+        toast.error(`You can compare up to ${maxCompare} cards`, {
+          description: 'Remove one to add another',
+          action: selectedCards.length === 2 ? {
+            label: 'Compare Now',
+            onClick: () => {
+              const event = new CustomEvent('openComparison');
+              window.dispatchEvent(event);
+            }
+          } : undefined
+        });
+        return;
+      }
+      
+      setSelectedCards(prev => [...prev, card]);
+      toast.success('Card added to comparison', {
+        description: card.name
+      });
+    }
+  };
+
+  const removeCard = (cardId: string) => {
+    setSelectedCards(prev => prev.filter(c => {
+      const cId = c.id?.toString() || c.seo_card_alias;
+      return cId !== cardId;
+    }));
+  };
+
+  const clearAll = () => {
+    setSelectedCards([]);
+    toast.info('Comparison cleared');
+  };
+
+  const isSelected = (cardId: string) => {
+    return selectedCards.some(c => {
+      const cId = c.id?.toString() || c.seo_card_alias;
+      return cId === cardId;
+    });
+  };
+
+  const canAddMore = selectedCards.length < maxCompare;
+
+  return (
+    <ComparisonContext.Provider value={{
+      selectedCards,
+      maxCompare,
+      toggleCard,
+      removeCard,
+      clearAll,
+      isSelected,
+      canAddMore
+    }}>
+      {children}
+    </ComparisonContext.Provider>
+  );
+}
+
+export function useComparison() {
+  const context = useContext(ComparisonContext);
+  if (!context) {
+    throw new Error('useComparison must be used within ComparisonProvider');
+  }
+  return context;
+}
