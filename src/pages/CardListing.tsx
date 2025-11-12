@@ -758,20 +758,26 @@ const CardListing = () => {
                         className="bg-card rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2"
                       >
                         <div className="relative h-48 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center p-4">
+                          {/* Compare Toggle Icon - Top Right */}
+                          <div className="absolute top-3 right-3 z-20">
+                            <CompareToggleIcon card={card} />
+                          </div>
+
+                          {/* Savings Badge - Top Left */}
                           {filters.category !== 'all' && (() => {
                             const categorySavings = cardSavings[filters.category] || {};
                             const saving = (categorySavings[String(card.id)] ?? categorySavings[String(card.seo_card_alias || card.card_alias || '')]);
                             if (saving !== undefined && saving !== null) {
                               if (saving === 0) {
                                 return (
-                                  <div className="absolute top-3 left-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white px-3 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 text-sm font-bold">
+                                  <div className="absolute top-3 left-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white px-3 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 text-sm font-bold z-10">
                                     <Sparkles className="w-4 h-4" />
                                     ₹0 Savings/yr
                                   </div>
                                 );
                               }
                               return (
-                                <div className="absolute top-3 left-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 text-sm font-bold">
+                                <div className="absolute top-3 left-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 text-sm font-bold z-10">
                                   <Sparkles className="w-4 h-4" />
                                   Save ₹{saving.toLocaleString()}/yr
                                 </div>
@@ -779,19 +785,28 @@ const CardListing = () => {
                             }
                             return null;
                           })()}
-                          {eligibilitySubmitted && (
-                            <Badge className="absolute top-3 right-3 bg-green-500 gap-1">
+
+                          {/* Eligibility Badge - Only show if not showing LTF */}
+                          {eligibilitySubmitted && !(() => {
+                            const categorySavings = cardSavings[filters.category] || {};
+                            const saving = (categorySavings[String(card.id)] ?? categorySavings[String(card.seo_card_alias || card.card_alias || '')]);
+                            return !saving && (card.joining_fee_text === "0" || (card.joining_fee_text?.toLowerCase?.() === "free"));
+                          })() && (
+                            <Badge className="absolute bottom-3 right-3 bg-green-500 gap-1 z-10">
                               <CheckCircle2 className="w-3 h-3" />
                               Eligible
                             </Badge>
                           )}
+
+                          {/* LTF Badge */}
                           {(() => {
                             const categorySavings = cardSavings[filters.category] || {};
                             const saving = (categorySavings[String(card.id)] ?? categorySavings[String(card.seo_card_alias || card.card_alias || '')]);
                             return !saving && (card.joining_fee_text === "0" || (card.joining_fee_text?.toLowerCase?.() === "free")) && (
-                              <Badge className="absolute top-3 right-3 bg-primary">LTF</Badge>
+                              <Badge className="absolute bottom-3 right-3 bg-primary z-10">LTF</Badge>
                             );
                           })()}
+
                           <img
                             src={card.card_bg_image || card.image}
                             alt={card.name}
