@@ -479,7 +479,7 @@ const CardListing = () => {
       <section className="pt-28 pb-12 bg-gradient-hero">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl lg:text-5xl font-bold text-center mb-6">
-            Find Your Dream Credit Card from 100+ Options
+            Find Your Perfect Card - 100+ Options
           </h1>
           
           {/* Category Navigation */}
