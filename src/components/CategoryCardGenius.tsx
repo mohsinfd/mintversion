@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { ShoppingBag, Utensils, Fuel, Plane, Coffee, ShoppingCart, CreditCard, ChevronDown, TrendingUp, Sparkles, Loader2 } from "lucide-react";
 import { cardService, SpendingData } from "@/services/cardService";
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
 import { SpendingInput } from "./ui/spending-input";
+import { useNavigate } from "react-router-dom";
 
 const creditCardFacts = [
   "💳 The first credit card was introduced in 1950 by Diners Club!",
@@ -105,6 +106,8 @@ const categories = [
 ];
 
 const CategoryCardGenius = () => {
+  const navigate = useNavigate();
+  const resultsRef = useRef<HTMLDivElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showQuestions, setShowQuestions] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -237,6 +240,14 @@ const CategoryCardGenius = () => {
         );
         
         setResults(cardsWithDetails);
+        
+        // Smooth scroll to results after a short delay to ensure DOM is updated
+        setTimeout(() => {
+          resultsRef.current?.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+          });
+        }, 100);
       }
     } catch (error) {
       console.error('Error calculating:', error);
@@ -255,6 +266,53 @@ const CategoryCardGenius = () => {
 
   const getTotalSpending = () => {
     return Object.values(responses).reduce((sum, val) => sum + val, 0);
+  };
+
+  const handleViewDetails = async (card: any) => {
+    try {
+      // Use seo_card_alias to navigate to card details page
+      const alias = card.seo_card_alias || card.card_alias;
+      if (alias) {
+        navigate(`/cards/${alias}`);
+      }
+    } catch (error) {
+      console.error('Error navigating to card details:', error);
+    }
+  };
+
+  const handleApplyNow = async (card: any) => {
+    try {
+      // Call the card listing API to get the apply URL
+      const params = {
+        slug: "",
+        banks_ids: [],
+        card_networks: [],
+        annualFees: "",
+        credit_score: "",
+        sort_by: "",
+        free_cards: "",
+        eligiblityPayload: {},
+        cardGeniusPayload: []
+      };
+      
+      const response = await cardService.getCardListing(params);
+      
+      // Find the matching card in the response and get its apply URL
+      const matchingCard = response.data?.cards?.find((c: any) => 
+        c.seo_card_alias === card.seo_card_alias || c.card_alias === card.card_alias
+      );
+      
+      if (matchingCard?.apply_url) {
+        window.open(matchingCard.apply_url, '_blank');
+      } else {
+        // Fallback: navigate to card details page
+        handleViewDetails(card);
+      }
+    } catch (error) {
+      console.error('Error applying for card:', error);
+      // Fallback: navigate to card details page
+      handleViewDetails(card);
+    }
   };
 
   return (
@@ -293,7 +351,7 @@ const CategoryCardGenius = () => {
 
         {/* Results Section */}
         {results && results.length > 0 ? (
-          <div className="animate-fade-in">
+          <div ref={resultsRef} className="animate-fade-in scroll-mt-20">
             <div className="text-center mb-8">
               <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-6 py-3 rounded-full mb-4 border border-green-200">
                 <TrendingUp className="w-5 h-5" />
@@ -412,27 +470,25 @@ const CategoryCardGenius = () => {
 
                     {/* CTA Buttons */}
                     <div className="space-y-2">
-                      <Button className="w-full shadow-lg" size="lg">
+                      <Button 
+                        className="w-full shadow-lg" 
+                        size="lg"
+                        onClick={() => handleApplyNow(card)}
+                      >
                         Apply Now
                       </Button>
-                      <Button variant="outline" className="w-full" size="sm">
-                        View Full Details
+                      <Button 
+                        variant="outline" 
+                        className="w-full" 
+                        size="sm"
+                        onClick={() => handleViewDetails(card)}
+                      >
+                        View Details
                       </Button>
                     </div>
                   </div>
                 </div>
               ))}
-            </div>
-
-            <div className="text-center">
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={resetCalculator}
-                className="shadow-lg hover:shadow-xl"
-              >
-                Try Another Category
-              </Button>
             </div>
           </div>
         ) : loading ? (
