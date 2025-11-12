@@ -50,6 +50,18 @@ const CardListing = () => {
   });
   const [showGeniusDialog, setShowGeniusDialog] = useState(false);
 
+  // Category to slug mapping
+  const categoryToSlug: Record<string, string> = {
+    'all': '',
+    'fuel': 'best-fuel-credit-card',
+    'shopping': 'best-shopping-credit-card',
+    'online-food': 'online-food-ordering',
+    'dining': 'best-dining-credit-card',
+    'grocery': 'BestCardsforGroceryShopping',
+    'travel': 'best-travel-credit-card',
+    'utility': 'best-utility-credit-card'
+  };
+
   // Eligibility payload
   const [eligibility, setEligibility] = useState({
     pincode: "",
@@ -67,7 +79,7 @@ const CardListing = () => {
       
       // Build base payload with active filters
       const baseParams: any = {
-        slug: "",
+        slug: categoryToSlug[filters.category] || "",
         banks_ids: filters.banks_ids || [],
         card_networks: filters.card_networks || [],
         annualFees: filters.annualFees || "",
@@ -151,14 +163,6 @@ const CardListing = () => {
           const score = parseInt(scoreRaw?.toString().replace(/[^0-9]/g, ''), 10);
           const scoreNum = Number.isFinite(score) ? score : 0;
           return scoreNum >= minScore;
-        });
-      }
-
-      // 4) Category filter (based on seo_alias)
-      if (Array.isArray(incomingCards) && filters.category && filters.category !== 'all') {
-        incomingCards = incomingCards.filter((card: any) => {
-          const seoAlias = (card.seo_alias || card.seo_card_alias || '').toLowerCase();
-          return seoAlias.includes(filters.category);
         });
       }
 
