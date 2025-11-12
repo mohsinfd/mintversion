@@ -323,7 +323,7 @@ const CategoryCardGenius = () => {
 
   const handleApplyNow = async (card: any) => {
     try {
-      // Call the card listing API to get the apply URL
+      // Map seo_card_alias with the cards listing API to get the network_url
       const params = {
         slug: "",
         banks_ids: [],
@@ -337,16 +337,20 @@ const CategoryCardGenius = () => {
       };
       
       const response = await cardService.getCardListing(params);
+      const list = response?.data?.cards || [];
       
-      // Find the matching card in the response and get its apply URL
-      const matchingCard = response.data?.cards?.find((c: any) => 
+      // Find the matching card by seo_card_alias
+      const matchingCard = list.find((c: any) => 
+        c.seo_card_alias === card.seo_card_alias ||
+        c.card_alias === card.card_alias ||
         c.slug === card.slug ||
-        c.seo_card_alias === card.seo_card_alias || c.card_alias === card.card_alias
+        c.name === card.card_name
       );
       
-      if (matchingCard?.apply_url) {
-        window.open(matchingCard.apply_url, '_blank');
+      if (matchingCard?.network_url) {
+        window.open(matchingCard.network_url, '_blank', 'noopener,noreferrer');
       } else {
+        console.warn('No network_url found for card', { card, matchingCard });
         // Fallback: navigate to card details page
         handleViewDetails(card);
       }
