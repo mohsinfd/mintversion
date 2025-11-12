@@ -103,8 +103,11 @@ export function ComparisonProvider({ children, maxCompare = 2 }: { children: Rea
 
 export function useComparison() {
   const context = useContext(ComparisonContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useComparison must be used within ComparisonProvider');
   }
   return context;
 }
+
+// Also export the context itself for debugging
+export { ComparisonContext };
