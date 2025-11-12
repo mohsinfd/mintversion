@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,7 +58,7 @@ const categoryQuestions: Record<string, Question[]> = {
 export default function GeniusDialog({ open, onOpenChange, category, onSubmit }: GeniusDialogProps) {
   const questions = categoryQuestions[category] || [];
   
-  const [spendingData, setSpendingData] = useState<SpendingData>({
+  const initialSpendingData: SpendingData = {
     amazon_spends: 0,
     flipkart_spends: 0,
     other_online_spends: 0,
@@ -78,7 +78,14 @@ export default function GeniusDialog({ open, onOpenChange, category, onSubmit }:
     insurance_car_or_bike_annual: 0,
     rent: 0,
     school_fees: 0
-  });
+  };
+  
+  const [spendingData, setSpendingData] = useState<SpendingData>(initialSpendingData);
+
+  // Reset spending data whenever category changes
+  useEffect(() => {
+    setSpendingData(initialSpendingData);
+  }, [category]);
 
   const handleInputChange = (key: keyof SpendingData, value: string) => {
     const numValue = parseInt(value) || 0;
