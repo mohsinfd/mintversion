@@ -38,13 +38,13 @@ const CardListing = () => {
   const [eligibilityOpen, setEligibilityOpen] = useState(false);
   const [eligibilitySubmitted, setEligibilitySubmitted] = useState(false);
   
-  // Filters - removed from API, will be handled frontend only
+  // Filters - sort_by will be sent to API
   const [filters, setFilters] = useState({
     banks_ids: [] as number[],
     card_networks: [] as string[],
     annualFees: "",
     credit_score: "",
-    sort_by: "recommended" as "recommended" | "annual_savings" | "annual_fees",
+    sort_by: "",  // Empty string by default, can be "recommended", "annual_savings", or "annual_fees"
     free_cards: false
   });
 
@@ -70,14 +70,14 @@ const CardListing = () => {
         card_networks: [],
         annualFees: "",
         credit_score: "",
-        sort_by: filters.sort_by,
+        sort_by: filters.sort_by || "",
         free_cards: "",
         eligiblityPayload: {
           pincode: "",
           inhandIncome: "",
           empStatus: ""
         },
-        cardGeniusPayload: {}
+        cardGeniusPayload: []  // MUST be empty array, not object
       };
 
       // Update eligibility only if submitted

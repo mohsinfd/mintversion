@@ -64,7 +64,7 @@ export const cardService = {
       inhandIncome: string;
       empStatus: string;
     };
-    cardGeniusPayload: {};
+    cardGeniusPayload: any[];  // Empty array
   }) {
     const response = await authManager.makeAuthenticatedRequest(
       `${BASE_URL}/cardgenius/cards`,
