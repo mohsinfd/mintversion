@@ -209,10 +209,10 @@ const CardListing = () => {
         <div className="space-y-2">
           {[
             { label: 'All Fees', value: '' },
-            { label: '₹0 - ₹500', value: '0-500' },
-            { label: '₹500 - ₹1,000', value: '500-1000' },
-            { label: '₹1,000 - ₹5,000', value: '1000-5000' },
-            { label: '₹5,000+', value: '5000-100000' }
+            { label: '₹0 - ₹1,000', value: '0-1000' },
+            { label: '₹1,000 - ₹2,000', value: '1000-2000' },
+            { label: '₹2,000 - ₹5,000', value: '2000-5000' },
+            { label: '₹5,000+', value: '5000+' }
           ].map((fee) => (
             <label key={fee.value} className="flex items-center gap-2 cursor-pointer">
               <input 
@@ -236,8 +236,8 @@ const CardListing = () => {
             { label: 'All Scores', value: '' },
             { label: '600+', value: '600' },
             { label: '650+', value: '650' },
-            { label: '750+ (Excellent)', value: '750' },
-            { label: '800+ (Premium)', value: '800' }
+            { label: '750+', value: '750' },
+            { label: '800+', value: '800' }
           ].map((score) => (
             <label key={score.value} className="flex items-center gap-2 cursor-pointer">
               <input 
