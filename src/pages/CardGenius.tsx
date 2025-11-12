@@ -573,7 +573,7 @@ const CardGenius = () => {
                           <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
                             Total Savings
                           </th>
-                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap">
+                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap w-12">
                             <span className="text-2xl">+</span>
                           </th>
                           <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
@@ -589,7 +589,7 @@ const CardGenius = () => {
                               </Tooltip>
                             </div>
                           </th>
-                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap">
+                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap w-12">
                             <span className="text-2xl">-</span>
                           </th>
                           <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
@@ -605,7 +605,7 @@ const CardGenius = () => {
                               </Tooltip>
                             </div>
                           </th>
-                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap">
+                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap w-12">
                             <span className="text-2xl">=</span>
                           </th>
                           <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
@@ -624,7 +624,7 @@ const CardGenius = () => {
                         </>
                       )}
                       
-                      {/* Detailed Breakdown Tab - Show category columns */}
+                      {/* Detailed Breakdown Tab - Show category columns + summary */}
                       {activeTab === 'detailed' && (
                         <>
                           {spendingCategories.map(category => {
@@ -652,6 +652,12 @@ const CardGenius = () => {
                             );
                           })}
                           <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
+                            Total Savings
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap w-12">
+                            <span className="text-2xl">+</span>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
                             <div className="flex items-center justify-center gap-1">
                               Milestone Benefits
                               <Tooltip>
@@ -663,6 +669,9 @@ const CardGenius = () => {
                                 </TooltipContent>
                               </Tooltip>
                             </div>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap w-12">
+                            <span className="text-2xl">-</span>
                           </th>
                           <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
                             <div className="flex items-center justify-center gap-1">
@@ -676,6 +685,9 @@ const CardGenius = () => {
                               </TooltipContent>
                               </Tooltip>
                             </div>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap w-12">
+                            <span className="text-2xl">=</span>
                           </th>
                           <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
                             <div className="flex items-center justify-center gap-1">
@@ -726,32 +738,24 @@ const CardGenius = () => {
                               <td className="p-4 text-center font-semibold text-green-600 whitespace-nowrap">
                                 ₹{card.total_savings_yearly.toLocaleString()}
                               </td>
-                              <td className="p-4 text-center text-muted-foreground">
-                                <span className="text-2xl">+</span>
-                              </td>
+                              <td className="p-4"></td>
                               <td className="p-4 text-center font-semibold text-blue-600 whitespace-nowrap">
                                 ₹{card.total_extra_benefits.toLocaleString()}
                               </td>
-                              <td className="p-4 text-center text-muted-foreground">
-                                <span className="text-2xl">-</span>
-                              </td>
+                              <td className="p-4"></td>
                               <td className="p-4 text-center font-semibold text-red-600 whitespace-nowrap">
                                 ₹{card.joining_fees.toLocaleString()}
                               </td>
-                              <td className="p-4 text-center text-muted-foreground">
-                                <span className="text-2xl">=</span>
-                              </td>
+                              <td className="p-4"></td>
                               <td className="p-4 text-center whitespace-nowrap">
-                                <div className="flex items-center justify-center gap-2">
-                                  <span className="font-bold text-lg text-green-700">
-                                    ₹{card.net_savings.toLocaleString()}
-                                  </span>
-                                </div>
+                                <span className="font-bold text-lg text-green-700">
+                                  ₹{card.net_savings.toLocaleString()}
+                                </span>
                               </td>
                             </>
                           )}
                           
-                          {/* Detailed Breakdown Tab - Show category data */}
+                          {/* Detailed Breakdown Tab - Show category data + summary */}
                           {activeTab === 'detailed' && (
                             <>
                               {spendingCategories.map(category => {
@@ -763,18 +767,22 @@ const CardGenius = () => {
                                   </td>
                                 );
                               })}
+                              <td className="p-4 text-center font-semibold text-green-600 whitespace-nowrap">
+                                ₹{card.total_savings_yearly.toLocaleString()}
+                              </td>
+                              <td className="p-4"></td>
                               <td className="p-4 text-center font-semibold text-blue-600 whitespace-nowrap">
                                 ₹{card.total_extra_benefits.toLocaleString()}
                               </td>
+                              <td className="p-4"></td>
                               <td className="p-4 text-center font-semibold text-red-600 whitespace-nowrap">
                                 ₹{card.joining_fees.toLocaleString()}
                               </td>
+                              <td className="p-4"></td>
                               <td className="p-4 text-center whitespace-nowrap">
-                                <div className="flex items-center justify-center gap-2">
-                                  <span className="font-bold text-lg text-green-700">
-                                    ₹{card.net_savings.toLocaleString()}
-                                  </span>
-                                </div>
+                                <span className="font-bold text-lg text-green-700">
+                                  ₹{card.net_savings.toLocaleString()}
+                                </span>
                               </td>
                             </>
                           )}
