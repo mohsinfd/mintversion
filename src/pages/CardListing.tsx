@@ -79,13 +79,23 @@ const CardListing = () => {
         params.eligiblityPayload = eligibility;
       }
 
+      console.log('Fetching cards with params:', params);
       const response = await cardService.getCardListing(params);
+      console.log('API Response:', response);
 
-      if (response.data && response.data.cards) {
+      if (response.status === 'success' && response.data && Array.isArray(response.data.cards)) {
         setCards(response.data.cards);
+      } else if (response.data && Array.isArray(response.data)) {
+        // Handle case where data is directly an array
+        setCards(response.data);
+      } else {
+        console.error('Unexpected response format:', response);
+        setCards([]);
       }
     } catch (error) {
       console.error('Failed to fetch cards:', error);
+      toast.error("Failed to load cards. Please try again.");
+      setCards([]);
     } finally {
       setLoading(false);
     }
