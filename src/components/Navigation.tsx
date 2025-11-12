@@ -10,7 +10,7 @@ const Navigation = () => {
             <img 
               src={logo} 
               alt="MoneyControl Credit Cards" 
-              className="h-10 md:h-12 w-auto"
+              className="h-40 md:h-48 w-auto"
             />
           </Link>
 
