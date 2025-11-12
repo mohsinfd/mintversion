@@ -150,10 +150,10 @@ const TestimonialSection = () => {
             <span className="text-sm font-semibold">Real Stories, Real Savings</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Join 50,000+ Smart Indians
+            Smart Indians Are Already Saving
           </h2>
           <p className="text-xl text-muted-foreground">
-            See how real people are transforming their finances with smarter credit card choices
+            See how everyday people like you are earning more rewards and saving thousands with the right credit card
           </p>
         </div>
       </div>
@@ -177,20 +177,20 @@ const TestimonialSection = () => {
       <div className="container mx-auto px-4 mt-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
           <div className="text-center">
-            <p className="text-4xl font-bold text-primary mb-2">50K+</p>
-            <p className="text-sm text-muted-foreground">Happy Users</p>
+            <p className="text-4xl font-bold text-primary mb-2">100+</p>
+            <p className="text-sm text-muted-foreground">Credit Cards Reviewed</p>
           </div>
           <div className="text-center">
-            <p className="text-4xl font-bold text-primary mb-2">₹2.5Cr+</p>
-            <p className="text-sm text-muted-foreground">Total Savings</p>
+            <p className="text-4xl font-bold text-primary mb-2">₹60K</p>
+            <p className="text-sm text-muted-foreground">Avg. Annual Savings</p>
           </div>
           <div className="text-center">
-            <p className="text-4xl font-bold text-primary mb-2">200+</p>
-            <p className="text-sm text-muted-foreground">Cards Listed</p>
+            <p className="text-4xl font-bold text-primary mb-2">6+</p>
+            <p className="text-sm text-muted-foreground">Spending Categories</p>
           </div>
           <div className="text-center">
-            <p className="text-4xl font-bold text-primary mb-2">4.9/5</p>
-            <p className="text-sm text-muted-foreground">User Rating</p>
+            <p className="text-4xl font-bold text-primary mb-2">24/7</p>
+            <p className="text-sm text-muted-foreground">Free Expert Advice</p>
           </div>
         </div>
       </div>
