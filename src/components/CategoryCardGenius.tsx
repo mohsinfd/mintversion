@@ -212,6 +212,7 @@ const CategoryCardGenius = () => {
                 ...card,
                 seo_card_alias: card.seo_card_alias || card.card_alias,
                 card_alias: card.card_alias || card.seo_card_alias,
+                slug: card.slug,
                 card_bg_image: '/placeholder.svg',
                 annual_fees: card.joining_fees || '0',
                 category_savings: card.spending_breakdown || {}
@@ -223,9 +224,10 @@ const CategoryCardGenius = () => {
               
               return {
                 ...card,
-                // Preserve the alias from the original API response
+                // Preserve identifiers
                 seo_card_alias: card.seo_card_alias || card.card_alias || cardDetails.seo_card_alias || cardAlias,
                 card_alias: card.card_alias || card.seo_card_alias || cardDetails.card_alias || cardAlias,
+                slug: card.slug || cardDetails.slug || cardAlias,
                 card_name: card.card_name || cardDetails.name || cardDetails.card_name,
                 card_bg_image: cardDetails.card_bg_image || card.card_bg_image || '/placeholder.svg',
                 annual_fees: cardDetails.annual_fee_text || card.joining_fees || '0',
@@ -238,6 +240,7 @@ const CategoryCardGenius = () => {
                 ...card,
                 seo_card_alias: card.seo_card_alias || card.card_alias,
                 card_alias: card.card_alias || card.seo_card_alias,
+                slug: card.slug,
                 card_bg_image: card.card_bg_image || '/placeholder.svg',
                 annual_fees: card.joining_fees || '0',
                 category_savings: card.spending_breakdown || {}
@@ -277,8 +280,8 @@ const CategoryCardGenius = () => {
 
   const handleViewDetails = async (card: any) => {
     try {
-      // Use seo_card_alias to navigate to card details page
-      const alias = card.seo_card_alias || card.card_alias;
+      // Prefer 'slug', then 'seo_card_alias', then 'card_alias'
+      const alias = card.slug || card.seo_card_alias || card.card_alias;
       if (alias) {
         navigate(`/cards/${alias}`);
       }
@@ -306,6 +309,7 @@ const CategoryCardGenius = () => {
       
       // Find the matching card in the response and get its apply URL
       const matchingCard = response.data?.cards?.find((c: any) => 
+        c.slug === card.slug ||
         c.seo_card_alias === card.seo_card_alias || c.card_alias === card.card_alias
       );
       
