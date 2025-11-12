@@ -97,15 +97,28 @@ const CardListing = () => {
       const response = await cardService.getCardListing(baseParams);
       console.log('API Response:', response);
 
+      let incomingCards: any[] = [];
       if (response.status === 'success' && response.data && Array.isArray(response.data.cards)) {
-        setCards(response.data.cards);
+        incomingCards = response.data.cards;
       } else if (response.data && Array.isArray(response.data)) {
-        setCards(response.data);
+        incomingCards = response.data;
       } else {
         console.error('Unexpected response format:', response);
-        setCards([]);
         toast.error("Failed to load cards");
       }
+
+      // Client-side safety filter for card networks (in case backend doesn't filter)
+      if (Array.isArray(incomingCards) && filters.card_networks?.length) {
+        const wanted = filters.card_networks.map((n) => n.replace(/\s+/g, '').toLowerCase());
+        incomingCards = incomingCards.filter((card: any) => {
+          const typeStr = (card.card_type || '').toString();
+          const parts = typeStr.split(',').map((p: string) => p.replace(/\s+/g, '').toLowerCase());
+          // Keep card if any selected network matches any part
+          return wanted.some((w) => parts.includes(w));
+        });
+      }
+
+      setCards(Array.isArray(incomingCards) ? incomingCards : []);
     } catch (error) {
       console.error('Failed to fetch cards:', error);
       toast.error("Failed to load cards. Please try again.");
