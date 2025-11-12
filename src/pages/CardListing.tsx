@@ -38,13 +38,13 @@ const CardListing = () => {
   const [eligibilityOpen, setEligibilityOpen] = useState(false);
   const [eligibilitySubmitted, setEligibilitySubmitted] = useState(false);
   
-  // API-compliant filters
+  // Filters - removed from API, will be handled frontend only
   const [filters, setFilters] = useState({
     banks_ids: [] as number[],
     card_networks: [] as string[],
     annualFees: "",
     credit_score: "",
-    sort_by: "recommended",
+    sort_by: "recommended" as "recommended" | "annual_savings" | "annual_fees",
     free_cards: false
   });
 
@@ -63,20 +63,24 @@ const CardListing = () => {
     try {
       setLoading(true);
       
+      // Build minimal payload - only include what's needed
       const params: any = {
-        slug: searchQuery || "",
-        banks_ids: filters.banks_ids,
-        card_networks: filters.card_networks,
-        annualFees: filters.annualFees,
-        credit_score: filters.credit_score,
-        sort_by: filters.sort_by,
-        free_cards: filters.free_cards,
-        cardGeniusPayload: {}
+        slug: "",
+        banks_ids: [],
+        card_networks: [],
+        annualFees: "",
+        credit_score: "",
+        sort_by: filters.sort_by, // Only these values: "recommended", "annual_savings", "annual_fees"
+        free_cards: ""
       };
 
-      // Only include eligibility if it's been submitted
+      // Only include eligibility if it's been submitted and has valid data
       if (eligibilitySubmitted && eligibility.pincode && eligibility.inhandIncome) {
-        params.eligiblityPayload = eligibility;
+        params.eligiblityPayload = {
+          pincode: eligibility.pincode,
+          inhandIncome: eligibility.inhandIncome,
+          empStatus: eligibility.empStatus
+        };
       }
 
       console.log('Fetching cards with params:', params);
@@ -86,7 +90,6 @@ const CardListing = () => {
       if (response.status === 'success' && response.data && Array.isArray(response.data.cards)) {
         setCards(response.data.cards);
       } else if (response.data && Array.isArray(response.data)) {
-        // Handle case where data is directly an array
         setCards(response.data);
       } else {
         console.error('Unexpected response format:', response);
@@ -102,8 +105,8 @@ const CardListing = () => {
   };
 
   const handleSearch = () => {
-    setDisplayCount(12); // Reset display count on new search
-    fetchCards();
+    // Search will be handled on frontend only - filter the cards array
+    setDisplayCount(12);
   };
 
   const loadMore = () => {

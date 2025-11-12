@@ -52,21 +52,17 @@ export const cardService = {
   },
 
   async getCardListing(params: {
-    slug?: string;
-    banks_ids?: number[];
-    card_networks?: string[];
-    annualFees?: string;
-    credit_score?: string;
-    sort_by?: string;
-    free_cards?: boolean;
+    slug: string;
+    banks_ids: number[];
+    card_networks: string[];
+    annualFees: string;
+    credit_score: string;
+    sort_by: "recommended" | "annual_savings" | "annual_fees";
+    free_cards: string;
     eligiblityPayload?: {
-      pincode?: string;
-      inhandIncome?: string;
-      empStatus?: string;
-    };
-    cardGeniusPayload?: {
-      tag_id?: string;
-      [key: string]: any;
+      pincode: string;
+      inhandIncome: string;
+      empStatus: string;
     };
   }) {
     const response = await authManager.makeAuthenticatedRequest(
