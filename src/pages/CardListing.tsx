@@ -63,15 +63,15 @@ const CardListing = () => {
     try {
       setLoading(true);
       
-      // Build base payload
+      // Build base payload with active filters
       const baseParams: any = {
         slug: "",
-        banks_ids: [],
-        card_networks: [],
-        annualFees: "",
-        credit_score: "",
+        banks_ids: filters.banks_ids || [],
+        card_networks: filters.card_networks || [],
+        annualFees: filters.annualFees || "",
+        credit_score: filters.credit_score || "",
         sort_by: filters.sort_by || "",
-        free_cards: "",
+        free_cards: filters.free_cards ? "true" : "",
         cardGeniusPayload: []
       };
 
