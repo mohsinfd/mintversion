@@ -103,12 +103,6 @@ export default function EligibilityDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Rate limiting check
-    if (checkCount >= 3) {
-      toast.error("You've reached the maximum number of eligibility checks. Please try again in a minute.");
-      return;
-    }
-
     if (!validateForm()) {
       return;
     }
@@ -141,14 +135,13 @@ export default function EligibilityDialog({
 
       const response = await Promise.race([apiCall, timeout]) as any;
 
-      // Increment check count
-      setCheckCount(prev => prev + 1);
-
-      // Track result analytics
+      // Track result analytics using exact card match
+      const cards = Array.isArray(response?.data) ? response.data : [];
+      const matched = cards.some((c: any) => (c?.seo_card_alias || c?.card_alias) === cardAlias);
       if (typeof window !== 'undefined' && (window as any).gtag) {
         (window as any).gtag('event', 'eligibility_result', {
           card_alias: cardAlias,
-          eligible: response?.data?.length > 0
+          eligible: matched
         });
       }
 

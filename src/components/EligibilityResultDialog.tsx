@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle, AlertCircle, ExternalLink } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -23,12 +23,10 @@ export default function EligibilityResultDialog({
   networkUrl,
   onRecheck
 }: EligibilityResultDialogProps) {
-  // Check if eligible: API returns success status with data array containing cards
-  const isEligible = result?.status === 'success' && 
-                     result?.data && 
-                     Array.isArray(result.data) && 
-                     result.data.length > 0;
-  
+  // Determine eligibility ONLY if the returned list contains this exact card alias
+  const cards = Array.isArray(result?.data) ? result.data : [];
+  const matched = cards.some((c: any) => (c?.seo_card_alias || c?.card_alias) === cardAlias);
+  const isEligible = result?.status === 'success' && matched;
   const hasData = result !== null && result !== undefined;
 
   useEffect(() => {
@@ -117,9 +115,9 @@ export default function EligibilityResultDialog({
                 You're eligible! 🎉
               </DialogTitle>
             </div>
-            <p className="text-muted-foreground">
+            <DialogDescription>
               You meet the initial eligibility criteria for this card. Click Apply to proceed.
-            </p>
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 my-4">
@@ -193,9 +191,9 @@ export default function EligibilityResultDialog({
                 Sorry — you're not eligible right now
               </DialogTitle>
             </div>
-            <p className="text-muted-foreground">
+            <DialogDescription>
               Based on the details you provided, this card isn't a match at the moment.
-            </p>
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 my-4">
