@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { cardService } from "@/services/cardService";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -26,21 +25,9 @@ const categories = {
 };
 
 const PopularCreditCards = () => {
-  const navigate = useNavigate();
   const [cards, setCards] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('travel');
-
-  const handleViewDetails = (seoAlias: string) => {
-    navigate(`/cards/${seoAlias}`);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleApplyNow = (networkUrl: string) => {
-    if (networkUrl) {
-      window.open(networkUrl, '_blank', 'noopener,noreferrer');
-    }
-  };
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -187,19 +174,10 @@ const PopularCreditCards = () => {
 
                         {/* CTA Buttons */}
                         <div className="space-y-2">
-                          <Button 
-                            className="w-full" 
-                            size="lg"
-                            onClick={() => handleApplyNow(card.network_url)}
-                          >
+                          <Button className="w-full" size="lg">
                             Apply Now
                           </Button>
-                          <Button 
-                            variant="outline" 
-                            className="w-full" 
-                            size="sm"
-                            onClick={() => handleViewDetails(card.seo_alias)}
-                          >
+                          <Button variant="outline" className="w-full" size="sm">
                             View Details
                           </Button>
                         </div>
