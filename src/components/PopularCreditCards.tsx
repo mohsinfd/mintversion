@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { cardService } from "@/services/cardService";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -25,6 +26,7 @@ const categories = {
 };
 
 const PopularCreditCards = () => {
+  const navigate = useNavigate();
   const [cards, setCards] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('travel');
@@ -174,10 +176,19 @@ const PopularCreditCards = () => {
 
                         {/* CTA Buttons */}
                         <div className="space-y-2">
-                          <Button className="w-full" size="lg">
+                          <Button 
+                            className="w-full" 
+                            size="lg"
+                            onClick={() => window.open(card.network_url, '_blank')}
+                          >
                             Apply Now
                           </Button>
-                          <Button variant="outline" className="w-full" size="sm">
+                          <Button 
+                            variant="outline" 
+                            className="w-full" 
+                            size="sm"
+                            onClick={() => navigate(`/card/${card.seo_alias}`)}
+                          >
                             View Details
                           </Button>
                         </div>
