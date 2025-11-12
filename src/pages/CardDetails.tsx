@@ -99,12 +99,19 @@ export default function CardDetails() {
     try {
       setLoading(true);
       const response = await cardService.getCardDetailsByAlias(alias);
-      if (response.status === 'success' && response.data?.[0]) {
-        setCard(response.data[0]);
+      if (response.status === 'success' && response.data) {
+        const cardData = Array.isArray(response.data) ? response.data[0] : response.data;
+        if (cardData) {
+          setCard(cardData);
+        } else {
+          toast.error('Card not found');
+        }
+      } else {
+        toast.error('Failed to load card details');
       }
     } catch (error) {
       console.error('Error fetching card details:', error);
-      toast.error('Failed to load card details');
+      toast.error('Unable to load card. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -193,20 +200,14 @@ export default function CardDetails() {
             {/* Card Image */}
             <div className="relative animate-fade-in">
               <div className="relative w-full max-w-md mx-auto">
-                {card.card_bg_image && (
-                  <img 
-                    src={card.card_bg_image} 
-                    alt={`${card.name} background`}
-                    className="w-full h-auto rounded-2xl shadow-2xl"
-                  />
-                )}
-                {card.image && (
-                  <img 
-                    src={card.image} 
-                    alt={card.name}
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 h-auto"
-                  />
-                )}
+                <img 
+                  src={card.image || card.card_bg_image || '/placeholder.svg'} 
+                  alt={card.name}
+                  className="w-full h-auto rounded-2xl shadow-2xl"
+                  onError={(e) => {
+                    e.currentTarget.src = '/placeholder.svg';
+                  }}
+                />
               </div>
             </div>
 
@@ -290,22 +291,24 @@ export default function CardDetails() {
       )}
 
       <div className="container mx-auto px-4 py-12 space-y-12">
-        {/* USPs Grid */}
-        <section className="animate-fade-in">
-          <h2 className="text-2xl font-bold text-foreground mb-6">Key Highlights</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {sortedUSPs.map((usp, index) => (
-              <div 
-                key={index}
-                className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
-                style={{ animationDelay: `${index * 80}ms` }}
-              >
-                <h3 className="font-semibold text-foreground mb-2">{usp.header}</h3>
-                <p className="text-sm text-muted-foreground">{usp.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* USPs Grid - Show remaining USPs not displayed in hero */}
+        {sortedUSPs.length > 2 && (
+          <section className="animate-fade-in">
+            <h2 className="text-2xl font-bold text-foreground mb-6">All Benefits</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {sortedUSPs.slice(2).map((usp, index) => (
+                <div 
+                  key={index}
+                  className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
+                  style={{ animationDelay: `${index * 80}ms` }}
+                >
+                  <h3 className="font-semibold text-foreground mb-2">{usp.header}</h3>
+                  <p className="text-sm text-muted-foreground">{usp.description}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Best For */}
         {card.tags && card.tags.length > 0 && (
