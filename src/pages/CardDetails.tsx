@@ -173,15 +173,22 @@ export default function CardDetails() {
   const sortedUSPs = [...(card.product_usps || [])].sort((a, b) => a.priority - b.priority);
   const topUSPs = sortedUSPs.slice(0, 4);
 
-  // Group benefits by type for horizontal scroll - exclude "All Benefits" if it exists
+  // Group benefits by type for horizontal scroll - exclude "All Benefits" and "all" variations
   const benefitTypes = card.product_benefits 
-    ? Array.from(new Set(card.product_benefits.map(b => b.benefit_type).filter(type => type !== 'All Benefits')))
+    ? Array.from(new Set(card.product_benefits
+        .map(b => b.benefit_type)
+        .filter(type => type && type.toLowerCase() !== 'all' && type.toLowerCase() !== 'all benefits')
+      ))
     : [];
   
   const benefitCategories = ['All', ...benefitTypes];
 
   const filteredBenefits = selectedBenefitCategory === 'All' 
-    ? card.product_benefits 
+    ? card.product_benefits?.filter(b => 
+        b.benefit_type && 
+        b.benefit_type.toLowerCase() !== 'all' && 
+        b.benefit_type.toLowerCase() !== 'all benefits'
+      )
     : card.product_benefits?.filter(b => b.benefit_type === selectedBenefitCategory);
 
   return (
