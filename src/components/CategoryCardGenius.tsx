@@ -182,10 +182,20 @@ const CategoryCardGenius = () => {
       const response = await cardService.calculateCardGenius(payload);
       
       if (response.status === 'success' && response.data?.savings) {
-        // The API returns data.savings array, sort by total_savings_yearly and get top 3
+        // Filter out cards with no savings and sort by total_savings_yearly in descending order
         const sortedCards = response.data.savings
-          .sort((a: any, b: any) => (b.total_savings_yearly || 0) - (a.total_savings_yearly || 0))
-          .slice(0, 3);
+          .filter((card: any) => card.total_savings_yearly > 0) // Only cards with savings
+          .sort((a: any, b: any) => {
+            const savingsA = parseFloat(a.total_savings_yearly) || 0;
+            const savingsB = parseFloat(b.total_savings_yearly) || 0;
+            return savingsB - savingsA; // Descending order (highest first)
+          })
+          .slice(0, 3); // Take only top 3 cards
+        
+        console.log('Sorted cards by total_savings_yearly:', sortedCards.map((c: any) => ({ 
+          name: c.card_name, 
+          savings: c.total_savings_yearly 
+        })));
         
         // Fetch full card details for each card to get card_bg_image
         const cardsWithDetails = await Promise.all(
