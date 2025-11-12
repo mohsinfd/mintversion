@@ -21,12 +21,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
 import confetti from 'canvas-confetti';
 import { toast } from "sonner";
 
@@ -36,10 +35,8 @@ const CardListing = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [displayCount, setDisplayCount] = useState(12);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [showEligibilityDialog, setShowEligibilityDialog] = useState(false);
+  const [eligibilityOpen, setEligibilityOpen] = useState(false);
   const [eligibilitySubmitted, setEligibilitySubmitted] = useState(false);
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [eligibleCount, setEligibleCount] = useState(0);
   
   // API-compliant filters
   const [filters, setFilters] = useState({
@@ -131,47 +128,18 @@ const CardListing = () => {
       return;
     }
 
-    setShowEligibilityDialog(false);
-    setLoading(true);
-
-    try {
-      const response = await cardService.getCardListing({
-        slug: searchQuery || "",
-        banks_ids: filters.banks_ids,
-        card_networks: filters.card_networks,
-        annualFees: filters.annualFees,
-        credit_score: filters.credit_score,
-        sort_by: filters.sort_by,
-        free_cards: filters.free_cards,
-        eligiblityPayload: eligibility,
-        cardGeniusPayload: {}
-      });
-
-      if (response.data && response.data.cards) {
-        setCards(response.data.cards);
-        setEligibleCount(response.data.cards.length);
-        setEligibilitySubmitted(true);
-        
-        // Show confetti and success dialog
-        if (response.data.cards.length > 0) {
-          confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 }
-          });
-          setShowSuccessDialog(true);
-        } else {
-          toast.error("No cards match your eligibility criteria", {
-            description: "Try adjusting your details or browse all cards"
-          });
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch eligible cards:', error);
-      toast.error("Unable to check eligibility. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    setEligibilitySubmitted(true);
+    setEligibilityOpen(false);
+    
+    toast.success("Eligibility criteria applied!", {
+      description: "Showing cards matching your profile"
+    });
+    
+    confetti({
+      particleCount: 60,
+      spread: 50,
+      origin: { y: 0.6 }
+    });
   };
 
   // Filter sidebar component
@@ -358,21 +326,78 @@ const CardListing = () => {
             
             {/* Top Filters */}
             <div className="flex flex-wrap items-center gap-3 justify-center">
-              <Button
-                variant={showEligibilityDialog ? "default" : "outline"}
-                onClick={() => setShowEligibilityDialog(true)}
-                className="gap-2"
-              >
-                <Sparkles className="w-4 h-4" />
-                Eligibility Check
-                {eligibilitySubmitted && <CheckCircle2 className="w-4 h-4 text-green-500" />}
-              </Button>
+              <Collapsible open={eligibilityOpen} onOpenChange={setEligibilityOpen}>
+                <CollapsibleTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="gap-2 text-muted-foreground hover:text-foreground"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Eligibility Check
+                    {eligibilitySubmitted && <CheckCircle2 className="w-4 h-4 text-green-500" />}
+                    <ChevronDown className={`w-4 h-4 transition-transform ${eligibilityOpen ? 'rotate-180' : ''}`} />
+                  </Button>
+                </CollapsibleTrigger>
+                
+                <CollapsibleContent className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-80 bg-popover border border-border rounded-lg shadow-lg p-4 z-50">
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs font-medium mb-1.5 block text-muted-foreground">Pincode</label>
+                      <Input
+                        type="text"
+                        placeholder="110001"
+                        value={eligibility.pincode}
+                        onChange={(e) => setEligibility(prev => ({ ...prev, pincode: e.target.value.replace(/\D/g, '').slice(0, 6) }))}
+                        maxLength={6}
+                        className="h-9"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="text-xs font-medium mb-1.5 block text-muted-foreground">Monthly Income (₹)</label>
+                      <Input
+                        type="text"
+                        placeholder="50000"
+                        value={eligibility.inhandIncome}
+                        onChange={(e) => setEligibility(prev => ({ ...prev, inhandIncome: e.target.value.replace(/\D/g, '') }))}
+                        className="h-9"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="text-xs font-medium mb-1.5 block text-muted-foreground">Employment Status</label>
+                      <Select
+                        value={eligibility.empStatus}
+                        onValueChange={(value) => setEligibility(prev => ({ ...prev, empStatus: value }))}
+                      >
+                        <SelectTrigger className="h-9">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="salaried">Salaried</SelectItem>
+                          <SelectItem value="self_employed">Self-Employed</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <Button 
+                      onClick={handleEligibilitySubmit}
+                      className="w-full h-9"
+                      size="sm"
+                      disabled={!eligibility.pincode || !eligibility.inhandIncome}
+                    >
+                      Apply Eligibility
+                    </Button>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
 
               <Select
                 value={filters.sort_by}
                 onValueChange={(value) => handleFilterChange('sort_by', value)}
               >
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-48 h-9 border-none bg-transparent text-muted-foreground hover:text-foreground">
                   <ArrowUpDown className="w-4 h-4 mr-2" />
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
@@ -384,9 +409,10 @@ const CardListing = () => {
               </Select>
 
               <Button
-                variant={filters.free_cards ? "default" : "outline"}
+                variant="ghost"
+                size="sm"
                 onClick={() => handleFilterChange('free_cards', !filters.free_cards)}
-                className="gap-2"
+                className={`gap-2 ${filters.free_cards ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 Free Cards Only
               </Button>
@@ -595,94 +621,6 @@ const CardListing = () => {
         </div>
       </section>
 
-      {/* Eligibility Dialog */}
-      <Dialog open={showEligibilityDialog} onOpenChange={setShowEligibilityDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">Card Eligibility</DialogTitle>
-            <DialogDescription>
-              Enter your details and get personalised card recommendations
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Pin Code*</label>
-              <Input
-                type="text"
-                placeholder="122003"
-                value={eligibility.pincode}
-                onChange={(e) => setEligibility(prev => ({ ...prev, pincode: e.target.value.replace(/\D/g, '').slice(0, 6) }))}
-                maxLength={6}
-                className="text-lg"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block">Monthly In Hand Income*</label>
-              <Input
-                type="text"
-                placeholder="₹1,00,000"
-                value={eligibility.inhandIncome}
-                onChange={(e) => setEligibility(prev => ({ ...prev, inhandIncome: e.target.value.replace(/\D/g, '') }))}
-                className="text-lg"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block">Income Type*</label>
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  type="button"
-                  variant={eligibility.empStatus === "salaried" ? "default" : "outline"}
-                  onClick={() => setEligibility(prev => ({ ...prev, empStatus: "salaried" }))}
-                  className="h-16 flex-col gap-1"
-                >
-                  <span className="text-2xl">💼</span>
-                  <span>Salaried</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant={eligibility.empStatus === "self_employed" ? "default" : "outline"}
-                  onClick={() => setEligibility(prev => ({ ...prev, empStatus: "self_employed" }))}
-                  className="h-16 flex-col gap-1"
-                >
-                  <span className="text-2xl">💻</span>
-                  <span>Self</span>
-                </Button>
-              </div>
-            </div>
-
-            <Button 
-              onClick={handleEligibilitySubmit}
-              className="w-full h-12 text-lg"
-              disabled={!eligibility.pincode || !eligibility.inhandIncome}
-            >
-              Find Eligible Cards
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Success Dialog */}
-      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <DialogContent className="sm:max-w-md text-center">
-          <DialogHeader>
-            <DialogTitle className="text-3xl mb-2">🎉 Congratulations!</DialogTitle>
-            <DialogDescription className="text-lg">
-              You are eligible for <span className="text-2xl font-bold text-primary">{eligibleCount}</span> credit card{eligibleCount !== 1 ? 's' : ''}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="text-muted-foreground mb-4">
-              Browse through your personalized recommendations below
-            </p>
-            <Button onClick={() => setShowSuccessDialog(false)} className="w-full">
-              View Cards
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
