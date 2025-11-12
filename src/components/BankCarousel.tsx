@@ -37,24 +37,25 @@ const BankCarousel = () => {
   }, [banks]);
 
   return (
-    <section className="py-16 bg-muted/30 overflow-hidden">
+    <section className="py-16 bg-gradient-to-b from-background to-muted/30 overflow-hidden">
       <div className="container mx-auto px-4 mb-8">
-        <h2 className="text-3xl font-bold text-center">
+        <h2 className="text-3xl font-bold text-center text-foreground">
           Trusted Partner Banks
         </h2>
       </div>
       
       <div className="relative">
-        <div className="flex bank-track">
+        <div className="flex bank-track will-change-transform">
           {banks.map((bank, index) => (
             <div
               key={`${bank.id}-${index}`}
-              className="flex-shrink-0 w-48 h-24 mx-4 flex items-center justify-center bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
+              className="flex-shrink-0 w-48 h-24 mx-4 flex items-center justify-center bg-card rounded-lg shadow-sm border border-border p-6 hover:shadow-md transition-all duration-300"
             >
               <img
                 src={bank.logo}
-                alt={bank.name}
-                className="max-w-full max-h-full object-contain transition-all"
+                alt={`${bank.name} logo`}
+                className="max-w-full max-h-full object-contain"
+                style={{ filter: 'none' }}
               />
             </div>
           ))}
