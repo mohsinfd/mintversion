@@ -566,70 +566,132 @@ const CardGenius = () => {
                   <thead className="bg-muted/50">
                     <tr>
                       <th className="text-left p-4 font-semibold text-sm text-foreground whitespace-nowrap">Credit Cards</th>
-                      {/* Dynamic category columns */}
-                      {spendingCategories.map(category => {
-                        const displayName = questions.find(q => q.field === category)?.question
-                          .replace('How much do you spend on ', '')
-                          .replace('How much do you spend at ', '')
-                          .replace('How much do you spend ', '')
-                          .replace(' in a month?', '')
-                          .replace(' in a year?', '')
-                          .replace(' every month?', '')
-                          .replace(' monthly?', '')
-                          .replace(' annually?', '')
-                          .replace("What's your average ", '')
-                          .replace('And what about your ', '')
-                          .replace('How much do you pay for ', '')
-                          .replace('How much do you pay in ', '')
-                          .replace('How often do you visit ', '')
-                          .replace('Plus, what about ', '')
-                          || category.replace(/_/g, ' ');
-                        
-                        return (
-                          <th key={category} className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
-                            {displayName}
+                      
+                      {/* Quick Insights Tab - Show summary columns */}
+                      {activeTab === 'quick' && (
+                        <>
+                          <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
+                            Total Savings
                           </th>
-                        );
-                      })}
-                      <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
-                        <div className="flex items-center justify-center gap-1">
-                          Milestone Benefits
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-xs">
-                              <p>Additional benefits like vouchers, reward points, or perks earned by achieving spending milestones</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                      </th>
-                      <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
-                        <div className="flex items-center justify-center gap-1">
-                          Joining Fees
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-xs">
-                              <p>Annual or one-time fees charged by the bank for this credit card</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                      </th>
-                      <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
-                        <div className="flex items-center justify-center gap-1">
-                          Net Savings
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-xs">
-                              <p>Your actual profit calculated as: Total Savings + Milestone Benefits - Joining Fees</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                      </th>
+                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap">
+                            <span className="text-2xl">+</span>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
+                            <div className="flex items-center justify-center gap-1">
+                              Milestone Benefits
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <p>Additional benefits like vouchers, reward points, or perks earned by achieving spending milestones</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap">
+                            <span className="text-2xl">-</span>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
+                            <div className="flex items-center justify-center gap-1">
+                              Joining Fees
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <p>Annual or one-time fees charged by the bank for this credit card</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground whitespace-nowrap">
+                            <span className="text-2xl">=</span>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
+                            <div className="flex items-center justify-center gap-1">
+                              Net Savings
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <p>Your actual profit calculated as: Total Savings + Milestone Benefits - Joining Fees</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </th>
+                        </>
+                      )}
+                      
+                      {/* Detailed Breakdown Tab - Show category columns */}
+                      {activeTab === 'detailed' && (
+                        <>
+                          {spendingCategories.map(category => {
+                            const displayName = questions.find(q => q.field === category)?.question
+                              .replace('How much do you spend on ', '')
+                              .replace('How much do you spend at ', '')
+                              .replace('How much do you spend ', '')
+                              .replace(' in a month?', '')
+                              .replace(' in a year?', '')
+                              .replace(' every month?', '')
+                              .replace(' monthly?', '')
+                              .replace(' annually?', '')
+                              .replace("What's your average ", '')
+                              .replace('And what about your ', '')
+                              .replace('How much do you pay for ', '')
+                              .replace('How much do you pay in ', '')
+                              .replace('How often do you visit ', '')
+                              .replace('Plus, what about ', '')
+                              || category.replace(/_/g, ' ');
+                            
+                            return (
+                              <th key={category} className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
+                                {displayName}
+                              </th>
+                            );
+                          })}
+                          <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
+                            <div className="flex items-center justify-center gap-1">
+                              Milestone Benefits
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <p>Additional benefits like vouchers, reward points, or perks earned by achieving spending milestones</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
+                            <div className="flex items-center justify-center gap-1">
+                              Joining Fees
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <p>Annual or one-time fees charged by the bank for this credit card</p>
+                              </TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-foreground whitespace-nowrap">
+                            <div className="flex items-center justify-center gap-1">
+                              Net Savings
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <p>Your actual profit calculated as: Total Savings + Milestone Benefits - Joining Fees</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </th>
+                        </>
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -657,29 +719,65 @@ const CardGenius = () => {
                               </div>
                             </div>
                           </td>
-                          {/* Dynamic category savings */}
-                          {spendingCategories.map(category => {
-                            const breakdown = card.spending_breakdown[category];
-                            const yearlySavings = breakdown?.savings ? breakdown.savings * 12 : 0;
-                            return (
-                              <td key={category} className="p-4 text-center font-semibold text-green-600 whitespace-nowrap">
-                                ₹{yearlySavings.toLocaleString()}
+                          
+                          {/* Quick Insights Tab - Show summary data */}
+                          {activeTab === 'quick' && (
+                            <>
+                              <td className="p-4 text-center font-semibold text-green-600 whitespace-nowrap">
+                                ₹{card.total_savings_yearly.toLocaleString()}
                               </td>
-                            );
-                          })}
-                          <td className="p-4 text-center font-semibold text-blue-600 whitespace-nowrap">
-                            ₹{card.total_extra_benefits.toLocaleString()}
-                          </td>
-                          <td className="p-4 text-center font-semibold text-red-600 whitespace-nowrap">
-                            ₹{card.joining_fees.toLocaleString()}
-                          </td>
-                          <td className="p-4 text-center whitespace-nowrap">
-                            <div className="flex items-center justify-center gap-2">
-                              <span className="font-bold text-lg text-green-700">
-                                ₹{card.net_savings.toLocaleString()}
-                              </span>
-                            </div>
-                          </td>
+                              <td className="p-4 text-center text-muted-foreground">
+                                <span className="text-2xl">+</span>
+                              </td>
+                              <td className="p-4 text-center font-semibold text-blue-600 whitespace-nowrap">
+                                ₹{card.total_extra_benefits.toLocaleString()}
+                              </td>
+                              <td className="p-4 text-center text-muted-foreground">
+                                <span className="text-2xl">-</span>
+                              </td>
+                              <td className="p-4 text-center font-semibold text-red-600 whitespace-nowrap">
+                                ₹{card.joining_fees.toLocaleString()}
+                              </td>
+                              <td className="p-4 text-center text-muted-foreground">
+                                <span className="text-2xl">=</span>
+                              </td>
+                              <td className="p-4 text-center whitespace-nowrap">
+                                <div className="flex items-center justify-center gap-2">
+                                  <span className="font-bold text-lg text-green-700">
+                                    ₹{card.net_savings.toLocaleString()}
+                                  </span>
+                                </div>
+                              </td>
+                            </>
+                          )}
+                          
+                          {/* Detailed Breakdown Tab - Show category data */}
+                          {activeTab === 'detailed' && (
+                            <>
+                              {spendingCategories.map(category => {
+                                const breakdown = card.spending_breakdown[category];
+                                const yearlySavings = breakdown?.savings ? breakdown.savings * 12 : 0;
+                                return (
+                                  <td key={category} className="p-4 text-center font-semibold text-green-600 whitespace-nowrap">
+                                    ₹{yearlySavings.toLocaleString()}
+                                  </td>
+                                );
+                              })}
+                              <td className="p-4 text-center font-semibold text-blue-600 whitespace-nowrap">
+                                ₹{card.total_extra_benefits.toLocaleString()}
+                              </td>
+                              <td className="p-4 text-center font-semibold text-red-600 whitespace-nowrap">
+                                ₹{card.joining_fees.toLocaleString()}
+                              </td>
+                              <td className="p-4 text-center whitespace-nowrap">
+                                <div className="flex items-center justify-center gap-2">
+                                  <span className="font-bold text-lg text-green-700">
+                                    ₹{card.net_savings.toLocaleString()}
+                                  </span>
+                                </div>
+                              </td>
+                            </>
+                          )}
                         </tr>
                       );
                     })}
