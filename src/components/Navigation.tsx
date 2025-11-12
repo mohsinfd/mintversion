@@ -1,16 +1,17 @@
 import { Link } from "react-router-dom";
-import { Sparkles } from "lucide-react";
+import logo from "@/assets/moneycontrol-logo.png";
 
 const Navigation = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <Sparkles className="w-8 h-8 text-primary" />
-            <span className="text-2xl font-bold text-foreground">
-              MoneyControl Cards
-            </span>
+          <Link to="/" className="flex items-center">
+            <img 
+              src={logo} 
+              alt="MoneyControl Credit Cards" 
+              className="h-10 md:h-12 w-auto"
+            />
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
