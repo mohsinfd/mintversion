@@ -177,9 +177,25 @@ const CardListing = () => {
   };
 
   const handleSearch = () => {
-    // Search will be handled on frontend only - filter the cards array
+    // Search is handled on frontend only
     setDisplayCount(12);
   };
+
+  // Frontend search filter
+  const filteredCards = cards.filter((card) => {
+    if (!searchQuery.trim()) return true;
+    
+    const query = searchQuery.toLowerCase();
+    const cardName = (card.name || '').toLowerCase();
+    const bankName = (card.banks?.name || '').toLowerCase();
+    const cardType = (card.card_type || '').toLowerCase();
+    const benefits = (card.benefits || '').toLowerCase();
+    
+    return cardName.includes(query) || 
+           bankName.includes(query) || 
+           cardType.includes(query) ||
+           benefits.includes(query);
+  });
 
   const loadMore = () => {
     setIsLoadingMore(true);
@@ -531,7 +547,7 @@ const CardListing = () => {
               {/* Mobile Filter Button */}
               <div className="lg:hidden mb-4 flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">
-                  Showing {Math.min(displayCount, cards.length)} of {cards.length} cards
+                  Showing {Math.min(displayCount, filteredCards.length)} of {filteredCards.length} cards
                 </p>
                 <Sheet>
                   <SheetTrigger asChild>
@@ -601,7 +617,7 @@ const CardListing = () => {
                   <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                   <p className="mt-4 text-muted-foreground">Loading cards...</p>
                 </div>
-              ) : cards.length === 0 ? (
+              ) : filteredCards.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-xl text-muted-foreground">No cards found matching your criteria</p>
                   <Button variant="outline" className="mt-4" onClick={clearFilters}>
@@ -611,7 +627,7 @@ const CardListing = () => {
               ) : (
                 <>
                   <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {cards.slice(0, displayCount).map((card, index) => (
+                    {filteredCards.slice(0, displayCount).map((card, index) => (
                       <div
                         key={card.id || index}
                         className="bg-card rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2"
@@ -688,7 +704,7 @@ const CardListing = () => {
                   </div>
                   
                   {/* Load More Button */}
-                  {displayCount < cards.length && (
+                  {displayCount < filteredCards.length && (
                     <div className="text-center mt-8">
                       <Button 
                         size="lg" 
@@ -702,7 +718,7 @@ const CardListing = () => {
                             Loading...
                           </>
                         ) : (
-                          `Load More Cards (${cards.length - displayCount} remaining)`
+                          `Load More Cards (${filteredCards.length - displayCount} remaining)`
                         )}
                       </Button>
                     </div>
