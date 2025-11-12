@@ -510,17 +510,6 @@ const CardListing = () => {
                   </Button>
                 );
               })}
-              {filters.category !== 'all' && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowGeniusDialog(true)}
-                  className="gap-2 text-primary border border-primary/30 hover:bg-primary/10"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  Try Genius
-                </Button>
-              )}
             </div>
           </div>
           
@@ -553,27 +542,27 @@ const CardListing = () => {
               </Button>
             </div>
             
-            {/* Top Filters */}
-            <div className="flex flex-wrap items-center gap-3 justify-center">
+            {/* Top Filters - Keep all on one line */}
+            <div className="flex items-center gap-3 justify-center">
               {filters.category !== 'all' && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setShowGeniusDialog(true)}
-                  className="gap-2 border-primary/50 hover:bg-primary/10"
+                  className="gap-2 border-primary/50 hover:bg-primary/10 flex-shrink-0"
                 >
                   <Sparkles className="w-4 h-4 text-primary" />
                   Try Genius
                 </Button>
               )}
               
-              <div className="relative">
+              <div className="relative flex-shrink-0">
                 <Collapsible open={eligibilityOpen} onOpenChange={setEligibilityOpen}>
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="gap-2 text-muted-foreground hover:text-foreground"
+                      className="gap-2 text-muted-foreground hover:text-foreground flex-shrink-0"
                     >
                       <Sparkles className="w-4 h-4" />
                       Eligibility Check
@@ -640,7 +629,7 @@ const CardListing = () => {
                 value={filters.sort_by}
                 onValueChange={(value) => handleFilterChange('sort_by', value)}
               >
-                <SelectTrigger className="w-48 h-9 border-none bg-transparent text-muted-foreground hover:text-foreground">
+                <SelectTrigger className="w-48 h-9 border-none bg-transparent text-muted-foreground hover:text-foreground flex-shrink-0">
                   <ArrowUpDown className="w-4 h-4 mr-2" />
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
@@ -655,7 +644,7 @@ const CardListing = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleFilterChange('free_cards', !filters.free_cards)}
-                className={`gap-2 ${filters.free_cards ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`gap-2 flex-shrink-0 ${filters.free_cards ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 Free Cards Only
               </Button>
