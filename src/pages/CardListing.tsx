@@ -340,15 +340,26 @@ const CardListing = () => {
           if (Number.isNaN(value) || !Number.isFinite(value)) return;
 
           const id = item.card_id ?? item.cardId ?? item.id ?? item.card?.id;
-          const alias =
-            item.card_alias ??
-            item.seo_card_alias ??
-            item.alias ??
-            item.card?.seo_card_alias ??
-            item.card?.alias;
+          const aliasCandidates = [
+            item.seo_card_alias,
+            item.card_alias,
+            item.alias,
+            item.card?.seo_card_alias,
+            item.card?.alias
+          ];
+          const alias = aliasCandidates.find((a: any) => typeof a === 'string' && a.trim().length > 0);
 
-          if (id != null) savings[String(id)] = value;
-          if (alias) savings[String(alias)] = value;
+
+          if (id != null) {
+            const prev = savings[String(id)];
+            savings[String(id)] = typeof prev === 'number' ? Math.max(prev, value) : value;
+          }
+          if (alias) {
+            const key = String(alias);
+            const prev = savings[key];
+            savings[key] = typeof prev === 'number' ? Math.max(prev, value) : value;
+          }
+
         });
         
         console.log('Calculated savings for category:', currentCategory, savings);
