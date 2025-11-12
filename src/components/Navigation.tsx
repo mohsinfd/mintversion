@@ -5,7 +5,7 @@ const Navigation = () => {
       <div className="container mx-auto px-4 py-2">
         <div className="flex items-center justify-between mx-0 px-0 py-0">
           <Link to="/" className="flex items-center">
-            <img src={logo} alt="MoneyControl Credit Cards" className="h-40 md:h-48 w-auto" />
+            <img src={logo} alt="MoneyControl Credit Cards" className="h-16 md:h-20 w-auto" />
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
