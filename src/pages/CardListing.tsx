@@ -40,7 +40,7 @@ const CardListing = () => {
   const [eligibilitySubmitted, setEligibilitySubmitted] = useState(false);
   const [showGeniusDialog, setShowGeniusDialog] = useState(false);
   const [geniusSpendingData, setGeniusSpendingData] = useState<SpendingData | null>(null);
-  const [cardSavings, setCardSavings] = useState<Record<string, number>>({});
+  const [cardSavings, setCardSavings] = useState<Record<string, Record<string, number>>>({});
   
   // Filters - sort_by will be sent to API
   const [filters, setFilters] = useState({
@@ -271,6 +271,8 @@ const CardListing = () => {
   const handleGeniusSubmit = async (spendingData: SpendingData) => {
     try {
       setGeniusSpendingData(spendingData);
+      const currentCategory = filters.category;
+      
       toast.success("Calculating savings...", {
         description: "Finding the best cards for your spending pattern"
       });
@@ -323,8 +325,13 @@ const CardListing = () => {
           if (alias) savings[String(alias)] = value;
         });
         
-        console.log('Calculated savings:', savings);
-        setCardSavings(savings);
+        console.log('Calculated savings for category:', currentCategory, savings);
+        
+        // Store savings under current category, overwriting previous values
+        setCardSavings(prev => ({
+          ...prev,
+          [currentCategory]: savings
+        }));
         
         toast.success("Savings calculated!", {
           description: `Found savings for ${Object.keys(savings).length} cards`
@@ -723,21 +730,29 @@ const CardListing = () => {
                         className="bg-card rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:-translate-y-2"
                       >
                         <div className="relative h-48 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center p-4">
-                          {filters.category !== 'all' && ((cardSavings[String(card.id)] ?? cardSavings[String(card.seo_card_alias || card.card_alias || '')]) ? (
-                            <div className="absolute top-3 left-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 text-sm font-bold">
-                              <Sparkles className="w-4 h-4" />
-                              Save ₹{(cardSavings[String(card.id)] ?? cardSavings[String(card.seo_card_alias || card.card_alias || '')]).toLocaleString()}/yr
-                            </div>
-                          ) : null)}
+                          {filters.category !== 'all' && (() => {
+                            const categorySavings = cardSavings[filters.category] || {};
+                            const saving = (categorySavings[String(card.id)] ?? categorySavings[String(card.seo_card_alias || card.card_alias || '')]);
+                            return saving ? (
+                              <div className="absolute top-3 left-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 text-sm font-bold">
+                                <Sparkles className="w-4 h-4" />
+                                Save ₹{saving.toLocaleString()}/yr
+                              </div>
+                            ) : null;
+                          })()}
                           {eligibilitySubmitted && (
                             <Badge className="absolute top-3 right-3 bg-green-500 gap-1">
                               <CheckCircle2 className="w-3 h-3" />
                               Eligible
                             </Badge>
                           )}
-                          {!((cardSavings[String(card.id)] ?? cardSavings[String(card.seo_card_alias || card.card_alias || '')])) && (card.joining_fee_text === "0" || (card.joining_fee_text?.toLowerCase?.() === "free")) && (
-                            <Badge className="absolute top-3 right-3 bg-primary">LTF</Badge>
-                          )}
+                          {(() => {
+                            const categorySavings = cardSavings[filters.category] || {};
+                            const saving = (categorySavings[String(card.id)] ?? categorySavings[String(card.seo_card_alias || card.card_alias || '')]);
+                            return !saving && (card.joining_fee_text === "0" || (card.joining_fee_text?.toLowerCase?.() === "free")) && (
+                              <Badge className="absolute top-3 right-3 bg-primary">LTF</Badge>
+                            );
+                          })()}
                           <img
                             src={card.card_bg_image || card.image}
                             alt={card.name}
@@ -761,7 +776,8 @@ const CardListing = () => {
                           <h3 className="text-xl font-bold mb-2 line-clamp-2">{card.name}</h3>
 
                           {filters.category !== 'all' && (() => {
-                            const saving = (cardSavings[String(card.id)] ?? cardSavings[String(card.seo_card_alias || card.card_alias || '')]);
+                            const categorySavings = cardSavings[filters.category] || {};
+                            const saving = (categorySavings[String(card.id)] ?? categorySavings[String(card.seo_card_alias || card.card_alias || '')]);
                             return saving ? (
                               <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-semibold">
                                 <Sparkles className="w-3 h-3" />
