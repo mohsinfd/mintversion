@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SpendingInput } from "@/components/ui/spending-input";
-import { ArrowLeft, ArrowRight, Loader2, Trophy, TrendingUp, Award, Sparkles, ChevronDown } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Trophy, TrendingUp, Award, Sparkles, ChevronDown, Shield, CheckCircle2, Zap } from "lucide-react";
 import { cardService, SpendingData } from "@/services/cardService";
 import { toast } from "sonner";
 import { CardSearchDropdown } from "@/components/CardSearchDropdown";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { openRedirectInterstitial } from "@/utils/redirectHandler";
+import Navigation from "@/components/Navigation";
+import { Badge } from "@/components/ui/badge";
 
 interface CategorySavings {
   category: string;
@@ -393,24 +395,33 @@ const BeatMyCard = () => {
   if (step === 'select') {
     return (
       <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/')}
-            className="mb-6"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
-          </Button>
-
-          <div className="max-w-3xl mx-auto">
+        <Navigation />
+        
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
+              <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
                 Beat My Card
               </h1>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-lg md:text-xl text-muted-foreground mb-6">
                 Select your current card and see if Card Genius can find a better match
               </p>
+              
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+                <Badge variant="secondary" className="px-4 py-2 text-sm font-medium bg-secondary/10 text-secondary border-secondary/20">
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  AI-Powered
+                </Badge>
+                <Badge variant="secondary" className="px-4 py-2 text-sm font-medium bg-primary/10 text-primary border-primary/20">
+                  <Shield className="w-4 h-4 mr-2" />
+                  100% Secure
+                </Badge>
+                <Badge variant="secondary" className="px-4 py-2 text-sm font-medium bg-green-500/10 text-green-600 border-green-500/20">
+                  <CheckCircle2 className="w-4 h-4 mr-2" />
+                  Trusted Nationwide
+                </Badge>
+              </div>
             </div>
 
             <CardSearchDropdown
@@ -433,6 +444,8 @@ const BeatMyCard = () => {
 
     return (
       <div className="min-h-screen bg-background">
+        <Navigation />
+        
         <div className="container mx-auto px-4 py-8">
           <Button
             variant="ghost"
@@ -538,16 +551,9 @@ const BeatMyCard = () => {
     
     return (
       <div className="min-h-screen bg-background">
+        <Navigation />
+        
         <div className="container mx-auto px-4 py-8">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/')}
-            className="mb-6"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
-          </Button>
-
           <div className="max-w-6xl mx-auto">
             {/* Verdict Section */}
             <div className="text-center mb-12 animate-fade-in">
