@@ -836,7 +836,7 @@ const CardGenius = () => {
           {/* Results Table */}
           <TooltipProvider>
             <div className="bg-white rounded-xl border border-border overflow-hidden">
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto pb-3">
                 <table className="w-full table-fixed">
                   <thead className="bg-muted/50">
                     <tr>
