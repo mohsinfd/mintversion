@@ -201,7 +201,7 @@ const CardGenius = () => {
   // Keyboard navigation for table scrolling
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (showResults && scrollContainerRef.current) {
+      if (showResults && scrollContainerRef.current && !selectedCard) {
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
           handleScroll('left');
@@ -214,7 +214,19 @@ const CardGenius = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showResults]);
+  }, [showResults, selectedCard]);
+
+  // Escape key to close card detail view
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedCard) {
+        setSelectedCard(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [selectedCard]);
 
   const handleNext = async () => {
     if (currentStep < questions.length - 1) {
@@ -472,13 +484,22 @@ const CardGenius = () => {
         <div className="min-h-screen bg-background">
           <header className="sticky top-0 bg-white border-b border-border z-50">
             <div className="container mx-auto px-4 py-4">
-              <button
-                onClick={() => setSelectedCard(null)}
-                className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5" />
-                <span className="font-semibold">Back to Results</span>
-              </button>
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={() => setSelectedCard(null)}
+                  className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                  <span className="font-semibold">Back to Results</span>
+                </button>
+                
+                {/* Escape key hint */}
+                <div className="text-xs text-muted-foreground flex items-center gap-1.5 bg-muted/30 px-3 py-1.5 rounded-full">
+                  <span>Press</span>
+                  <kbd className="px-1.5 py-0.5 text-xs font-semibold bg-background border border-border rounded">Esc</kbd>
+                  <span>to close</span>
+                </div>
+              </div>
             </div>
           </header>
 
