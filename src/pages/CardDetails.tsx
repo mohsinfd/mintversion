@@ -404,25 +404,25 @@ export default function CardDetails() {
               <ExternalLink className="ml-2 w-4 h-4" />
             </Button>
             <Button
-              size="sm"
-              variant={isSelected(card.seo_card_alias) ? "secondary" : "ghost"}
+              size="lg"
+              variant={isSelected(card.seo_card_alias) ? "default" : "outline"}
               onClick={() => {
                 toggleCard(card);
                 setIsComparePanelOpen(true);
               }}
               className={isSelected(card.seo_card_alias)
-                ? "border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                : "border border-border text-muted-foreground hover:text-foreground hover:bg-accent"
+                ? "border-2 border-primary bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+                : "border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-semibold"
               }
             >
               {isSelected(card.seo_card_alias) ? (
                 <>
-                  <Check className="mr-2 w-4 h-4" />
+                  <Check className="mr-2 w-5 h-5" />
                   Added
                 </>
               ) : (
                 <>
-                  <Plus className="mr-2 w-4 h-4" />
+                  <Plus className="mr-2 w-5 h-5" />
                   Compare
                 </>
               )}
