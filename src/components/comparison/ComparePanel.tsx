@@ -101,13 +101,6 @@ export function ComparePanel({ open, onOpenChange, preSelectedCard }: ComparePan
     });
   }, [open, allCards.length]);
 
-  // Auto-select the pre-selected card when panel opens
-  useEffect(() => {
-    if (open && preSelectedCard && !isSelected(preSelectedCard.seo_card_alias || preSelectedCard.id?.toString())) {
-      toggleCard(preSelectedCard);
-    }
-  }, [open, preSelectedCard]);
-
   // Search for cards - slot 0
   useEffect(() => {
     const query = debouncedQuery0;
