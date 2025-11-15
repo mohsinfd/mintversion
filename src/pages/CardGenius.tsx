@@ -44,6 +44,8 @@ interface SpendingQuestion {
   min: number;
   max: number;
   step: number;
+  showCurrency?: boolean;
+  suffix?: string;
 }
 
 const questions: SpendingQuestion[] = [
@@ -57,8 +59,8 @@ const questions: SpendingQuestion[] = [
   { field: 'dining_or_going_out', question: 'How much do you spend on dining out in a month?', emoji: '🥗', min: 0, max: 30000, step: 500 },
   { field: 'flights_annual', question: 'How much do you spend on flights in a year?', emoji: '✈️', min: 0, max: 500000, step: 5000 },
   { field: 'hotels_annual', question: 'How much do you spend on hotel stays in a year?', emoji: '🛌', min: 0, max: 300000, step: 5000 },
-  { field: 'domestic_lounge_usage_quarterly', question: 'How often do you visit domestic airport lounges in a year?', emoji: '🇮🇳', min: 0, max: 50, step: 1 },
-  { field: 'international_lounge_usage_quarterly', question: 'Plus, what about international airport lounges?', emoji: '🌎', min: 0, max: 50, step: 1 },
+  { field: 'domestic_lounge_usage_quarterly', question: 'How often do you visit domestic airport lounges in a year?', emoji: '🇮🇳', min: 0, max: 50, step: 1, showCurrency: false, suffix: ' visits' },
+  { field: 'international_lounge_usage_quarterly', question: 'Plus, what about international airport lounges?', emoji: '🌎', min: 0, max: 50, step: 1, showCurrency: false, suffix: ' visits' },
   { field: 'mobile_phone_bills', question: 'How much do you spend on recharging your mobile or Wi-Fi monthly?', emoji: '📱', min: 0, max: 10000, step: 100 },
   { field: 'electricity_bills', question: "What's your average monthly electricity bill?", emoji: '⚡️', min: 0, max: 20000, step: 500 },
   { field: 'water_bills', question: 'And what about your monthly water bill?', emoji: '💧', min: 0, max: 5000, step: 100 },
@@ -400,6 +402,9 @@ const CardGenius = () => {
       }
     });
     
+    // Add monthly equivalent of annual spending fields to display in monthly view
+    const monthlyEquivalentOfAnnual = totalAnnualFieldsSpend / 12;
+    const displayMonthlySpend = totalMonthlySpend + monthlyEquivalentOfAnnual;
     const totalAnnualSpend = (totalMonthlySpend * 12) + totalAnnualFieldsSpend;
 
     if (selectedCard) {
@@ -700,7 +705,7 @@ const CardGenius = () => {
             <p className="text-sm font-medium text-foreground mb-2">Your Total Spends:</p>
             <div className="flex items-center justify-center gap-2 flex-wrap">
               <span className="text-2xl font-bold text-foreground">
-                ₹{(totalMonthlySpend / 100000).toFixed(2)}L Monthly
+                ₹{(displayMonthlySpend / 100000).toFixed(2)}L Monthly
               </span>
               <span className="text-muted-foreground">|</span>
               <span className="text-2xl font-bold text-primary">
@@ -1257,6 +1262,8 @@ const CardGenius = () => {
               min={currentQuestion.min}
               max={currentQuestion.max}
               step={currentQuestion.step}
+              showCurrency={currentQuestion.showCurrency}
+              suffix={currentQuestion.suffix}
             />
           </div>
 
