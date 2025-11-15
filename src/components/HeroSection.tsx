@@ -78,15 +78,15 @@ const HeroSection = () => {
             <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm text-charcoal-600">
               <div className="flex items-center gap-2">
                 <Cpu className="w-5 h-5 text-primary" />
-                <span className="font-medium">AI-Powered Picks</span>
+                <span className="font-medium">AI-Powered Recommendations</span>
               </div>
               <div className="flex items-center gap-2">
                 <Wallet className="w-5 h-5 text-primary" />
-                <span className="font-medium">₹1K-5K Real Cashback</span>
+                <span className="font-medium">Unbiased Reviews</span>
               </div>
               <div className="flex items-center gap-2">
                 <GitCompare className="w-5 h-5 text-primary" />
-                <span className="font-medium">Easy Comparison</span>
+                <span className="font-medium">Side-by-Side Comparison</span>
               </div>
             </div>
 
