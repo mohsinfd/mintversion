@@ -531,14 +531,7 @@ const BeatMyCard = () => {
         <div className="container mx-auto px-4 py-8 pt-24">
           {/* Header with Home Button */}
           <div className="flex items-center justify-between mb-8">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/')} 
-              className="gap-2 hover:bg-primary/10"
-            >
-              <Home className="h-4 w-4" />
-              <span className="hidden sm:inline">Back to Home</span>
-            </Button>
+            
           </div>
 
           <div className="max-w-4xl mx-auto">
@@ -582,11 +575,7 @@ const BeatMyCard = () => {
         <div className="container mx-auto px-4 py-8 pt-24">
           {/* Header with Navigation */}
           <div className="flex items-center justify-between mb-8">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/')} 
-              className="gap-2 hover:bg-primary/10"
-            >
+            <Button variant="ghost" onClick={() => navigate('/')} className="gap-2 hover:bg-primary/10">
               <Home className="h-4 w-4" />
               <span className="hidden sm:inline">Back to Home</span>
             </Button>
@@ -604,10 +593,9 @@ const BeatMyCard = () => {
                 </span>
               </div>
               <div className="h-2 bg-secondary/20 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-secondary to-primary transition-all duration-500 ease-out rounded-full" 
-                  style={{ width: `${progress}%` }}
-                />
+                <div className="h-full bg-gradient-to-r from-secondary to-primary transition-all duration-500 ease-out rounded-full" style={{
+                width: `${progress}%`
+              }} />
               </div>
             </div>
 
@@ -623,34 +611,17 @@ const BeatMyCard = () => {
                 </div>
               </div>
 
-              <SpendingInput 
-                question={question.question}
-                emoji={question.emoji}
-                value={responses[question.field] || 0} 
-                onChange={value => setResponses(prev => ({ ...prev, [question.field]: value }))} 
-                min={question.min} 
-                max={question.max} 
-                step={question.step} 
-                showCurrency={question.showCurrency} 
-                suffix={question.suffix} 
-              />
+              <SpendingInput question={question.question} emoji={question.emoji} value={responses[question.field] || 0} onChange={value => setResponses(prev => ({
+              ...prev,
+              [question.field]: value
+            }))} min={question.min} max={question.max} step={question.step} showCurrency={question.showCurrency} suffix={question.suffix} />
 
               <div className="flex gap-3 mt-8">
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  onClick={handlePrev} 
-                  disabled={currentStep === 0} 
-                  className="flex-1"
-                >
+                <Button variant="outline" size="lg" onClick={handlePrev} disabled={currentStep === 0} className="flex-1">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Previous
                 </Button>
-                <Button
-                  size="lg" 
-                  onClick={handleNext} 
-                  className="flex-1"
-                >
+                <Button size="lg" onClick={handleNext} className="flex-1">
                   {currentStep === questions.length - 1 ? 'Show Results' : 'Next'}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
