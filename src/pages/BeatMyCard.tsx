@@ -528,21 +528,13 @@ const BeatMyCard = () => {
 
   // Render card selection
   if (step === 'select') {
-    return (
-      <>
+    return <>
         <Navigation />
         <div className="min-h-screen bg-background pt-24 pb-16">
         <div className="container mx-auto px-4 py-8">
           {/* Header with Home Button */}
           <div className="flex items-center justify-between mb-8">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/')} 
-              className="gap-2 hover:bg-primary/10"
-            >
-              <Home className="h-4 w-4" />
-              <span className="hidden sm:inline">Back to Home</span>
-            </Button>
+            
           </div>
 
           <div className="max-w-4xl mx-auto">
@@ -576,26 +568,20 @@ const BeatMyCard = () => {
         </div>
         </div>
         <Footer />
-      </>
-    );
+      </>;
   }
 
   // Render questionnaire
   if (step === 'questions') {
     const question = questions[currentStep];
     const progress = (currentStep + 1) / questions.length * 100;
-    return (
-      <>
+    return <>
         <Navigation />
         <div className="min-h-screen bg-background pt-24 pb-16">
         <div className="container mx-auto px-4 py-8">
           {/* Header with Navigation */}
           <div className="flex items-center justify-between mb-8">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/')} 
-              className="gap-2 hover:bg-primary/10"
-            >
+            <Button variant="ghost" onClick={() => navigate('/')} className="gap-2 hover:bg-primary/10">
               <Home className="h-4 w-4" />
               <span className="hidden sm:inline">Home</span>
             </Button>
@@ -615,26 +601,17 @@ const BeatMyCard = () => {
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-300" style={{
-                width: `${progress}%`
-              }} />
+                  width: `${progress}%`
+                }} />
               </div>
             </div>
 
             {/* Question card */}
             <div className="bg-card border border-border rounded-2xl p-8 shadow-lg mb-6">
-              <SpendingInput 
-                question={question.question} 
-                emoji={question.emoji} 
-                value={responses[question.field] || 0} 
-                onChange={value => setResponses({
-                  ...responses,
-                  [question.field]: value
-                })} 
-                min={question.min} 
-                max={question.max} 
-                step={question.step}
-                showRupee={!question.isCount}
-              />
+              <SpendingInput question={question.question} emoji={question.emoji} value={responses[question.field] || 0} onChange={value => setResponses({
+                ...responses,
+                [question.field]: value
+              })} min={question.min} max={question.max} step={question.step} showRupee={!question.isCount} />
             </div>
 
             {/* Navigation buttons */}
@@ -672,26 +649,20 @@ const BeatMyCard = () => {
         </div>
         </div>
         <Footer />
-      </>
-    );
+      </>;
   }
 
   // Render results
   if (step === 'results' && userCardData && geniusCardData) {
     const savingsDifference = Math.abs(geniusCardData.annual_saving - userCardData.annual_saving);
     const maxSavings = Math.max(userCardData.annual_saving, geniusCardData.annual_saving);
-    return (
-      <>
+    return <>
         <Navigation />
         <div className="min-h-screen bg-background pt-24 pb-16">
         <div className="container mx-auto px-4 py-8">
           {/* Header with Home Button */}
           <div className="flex items-center justify-between mb-8">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/')} 
-              className="gap-2 hover:bg-primary/10"
-            >
+            <Button variant="ghost" onClick={() => navigate('/')} className="gap-2 hover:bg-primary/10">
               <Home className="h-4 w-4" />
               <span className="hidden sm:inline">Back to Home</span>
             </Button>
@@ -745,12 +716,9 @@ const BeatMyCard = () => {
                     <span className="text-2xl font-bold text-primary">₹{userCardData.annual_saving?.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="relative h-12 bg-muted/50 rounded-full overflow-hidden border-2 border-primary/20">
-                    <div 
-                      className="h-full bg-gradient-to-r from-primary via-primary to-primary/80 flex items-center justify-end pr-4 transition-all duration-500 shadow-lg" 
-                      style={{
-                        width: `${maxSavings > 0 ? Math.max(userCardData.annual_saving / maxSavings * 100, 5) : 5}%`
-                      }}
-                    >
+                    <div className="h-full bg-gradient-to-r from-primary via-primary to-primary/80 flex items-center justify-end pr-4 transition-all duration-500 shadow-lg" style={{
+                      width: `${maxSavings > 0 ? Math.max(userCardData.annual_saving / maxSavings * 100, 5) : 5}%`
+                    }}>
                       <span className="text-sm font-bold text-primary-foreground drop-shadow-md">
                         {maxSavings > 0 ? Math.round(userCardData.annual_saving / maxSavings * 100) : 0}%
                       </span>
@@ -770,12 +738,9 @@ const BeatMyCard = () => {
                     <span className="text-2xl font-bold text-secondary">₹{geniusCardData.annual_saving?.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="relative h-12 bg-muted/50 rounded-full overflow-hidden border-2 border-secondary/20">
-                    <div 
-                      className="h-full bg-gradient-to-r from-secondary via-secondary to-secondary/80 flex items-center justify-end pr-4 transition-all duration-500 shadow-lg" 
-                      style={{
-                        width: `${maxSavings > 0 ? geniusCardData.annual_saving / maxSavings * 100 : 100}%`
-                      }}
-                    >
+                    <div className="h-full bg-gradient-to-r from-secondary via-secondary to-secondary/80 flex items-center justify-end pr-4 transition-all duration-500 shadow-lg" style={{
+                      width: `${maxSavings > 0 ? geniusCardData.annual_saving / maxSavings * 100 : 100}%`
+                    }}>
                       <span className="text-sm font-bold text-secondary-foreground drop-shadow-md">100%</span>
                     </div>
                   </div>
@@ -805,9 +770,9 @@ const BeatMyCard = () => {
                 <div className={`p-6 ${isUserWinner ? 'pt-16' : ''}`}>
                   <div className="bg-gradient-to-br from-muted/50 to-muted rounded-2xl p-6 mb-4">
                     <img src={userCardData.image} alt={userCardData.name} className="w-full h-52 object-contain drop-shadow-2xl" onError={e => {
-                    console.error("Failed to load user card image:", userCardData.image);
-                    e.currentTarget.src = '/placeholder.svg';
-                  }} />
+                      console.error("Failed to load user card image:", userCardData.image);
+                      e.currentTarget.src = '/placeholder.svg';
+                    }} />
                   </div>
                   
                   <div className="text-center mb-4">
@@ -856,9 +821,9 @@ const BeatMyCard = () => {
                 <div className={`p-6 ${!isUserWinner ? 'pt-16' : ''}`}>
                   <div className="bg-gradient-to-br from-secondary/5 to-secondary/10 rounded-2xl p-6 mb-4">
                     <img src={geniusCardData.image} alt={geniusCardData.name} className="w-full h-52 object-contain drop-shadow-2xl" onError={e => {
-                    console.error("Failed to load genius card image:", geniusCardData.image);
-                    e.currentTarget.src = '/placeholder.svg';
-                  }} />
+                      console.error("Failed to load genius card image:", geniusCardData.image);
+                      e.currentTarget.src = '/placeholder.svg';
+                    }} />
                   </div>
                   
                   <div className="text-center mb-4">
@@ -953,9 +918,9 @@ const BeatMyCard = () => {
                     <AccordionContent className="px-6 pb-6">
                       <div className="space-y-4 pt-4">
                         {categorySavings.map((category, index) => {
-                      const difference = category.geniusSaving - category.userSaving;
-                      const percentDiff = category.userSaving > 0 ? (difference / category.userSaving * 100).toFixed(0) : '100';
-                      return <div key={index} className="bg-muted/30 rounded-xl p-4 hover:bg-muted/50 transition-colors">
+                        const difference = category.geniusSaving - category.userSaving;
+                        const percentDiff = category.userSaving > 0 ? (difference / category.userSaving * 100).toFixed(0) : '100';
+                        return <div key={index} className="bg-muted/30 rounded-xl p-4 hover:bg-muted/50 transition-colors">
                               <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-3">
                                   <span className="text-2xl">{category.emoji}</span>
@@ -975,8 +940,8 @@ const BeatMyCard = () => {
                                   </div>
                                   <div className="h-2 bg-muted rounded-full overflow-hidden">
                                     <div className="h-full bg-gradient-to-r from-primary/60 to-primary transition-all duration-500" style={{
-                                width: category.geniusSaving > 0 ? `${category.userSaving / category.geniusSaving * 100}%` : '100%'
-                              }} />
+                                  width: category.geniusSaving > 0 ? `${category.userSaving / category.geniusSaving * 100}%` : '100%'
+                                }} />
                                   </div>
                                 </div>
                                 
@@ -988,13 +953,13 @@ const BeatMyCard = () => {
                                   </div>
                                   <div className="h-2 bg-muted rounded-full overflow-hidden">
                                     <div className="h-full bg-gradient-to-r from-secondary to-secondary/70 transition-all duration-500" style={{
-                                width: '100%'
-                              }} />
+                                  width: '100%'
+                                }} />
                                   </div>
                                 </div>
                               </div>
                             </div>;
-                    })}
+                      })}
                         
                         <div className="bg-gradient-to-r from-secondary/10 to-primary/10 rounded-xl p-5 border-2 border-secondary/20 mt-6">
                           <div className="flex items-center justify-between">
@@ -1028,25 +993,25 @@ const BeatMyCard = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
               <Button variant="outline" size="lg" onClick={() => {
-              setStep('select');
-              setCurrentStep(0);
-              setResponses({});
-              setSelectedCard(null);
-              setUserCardData(null);
-              setGeniusCardData(null);
-              setCategorySavings([]);
-            }} className="text-lg px-8">
+                setStep('select');
+                setCurrentStep(0);
+                setResponses({});
+                setSelectedCard(null);
+                setUserCardData(null);
+                setGeniusCardData(null);
+                setCategorySavings([]);
+              }} className="text-lg px-8">
                 Try Another Card
               </Button>
               {!isUserWinner && <Button size="lg" onClick={() => {
-              const bankName = geniusCardData.banks?.name || geniusCardData.name.split(' ')[0];
-              openRedirectInterstitial({
-                bankName: bankName,
-                cardName: geniusCardData.name,
-                cardId: geniusCardData.id,
-                bankLogo: geniusCardData.image
-              });
-            }} className="text-lg px-8 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70">
+                const bankName = geniusCardData.banks?.name || geniusCardData.name.split(' ')[0];
+                openRedirectInterstitial({
+                  bankName: bankName,
+                  cardName: geniusCardData.name,
+                  cardId: geniusCardData.id,
+                  bankLogo: geniusCardData.image
+                });
+              }} className="text-lg px-8 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70">
                   Apply for Better Card
                   <TrendingUp className="ml-2 h-5 w-5" />
                 </Button>}
@@ -1055,8 +1020,7 @@ const BeatMyCard = () => {
         </div>
         </div>
         <Footer />
-      </>
-    );
+      </>;
   }
 
   // Loading state for results
