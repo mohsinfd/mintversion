@@ -542,7 +542,7 @@ const BeatMyCard = () => {
               <h1 className="text-5xl md:text-6xl font-bold mb-5 bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
                 Beat My Card
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto px-px">
                 Select your current card and see if Card Genius can find a better match
               </p>
               
