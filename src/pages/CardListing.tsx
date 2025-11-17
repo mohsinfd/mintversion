@@ -483,7 +483,7 @@ const CardListing = () => {
       <section className="pt-28 pb-12 bg-gradient-hero">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-10">
-            <h1 className="text-4xl xl:text-6xl font-bold whitespace-nowrap overflow-hidden text-ellipsis lg:text-4xl">
+            <h1 className="text-4xl xl:text-6xl font-bold whitespace-nowrap overflow-hidden text-ellipsis lg:text-3xl">
               Discover India's Best Credit Cards
             </h1>
           </div>
@@ -562,8 +562,7 @@ const CardListing = () => {
               </div>
 
               {/* AI Card Genius Promo - Show only when category is selected (not "All Cards") */}
-              {filters.category !== 'all' && (
-                <div className="mb-6 bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20 rounded-xl p-4">
+              {filters.category !== 'all' && <div className="mb-6 bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20 rounded-xl p-4">
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
                     <div className="flex items-center gap-3 flex-1">
                       <Sparkles className="h-5 w-5 text-primary flex-shrink-0" />
@@ -581,8 +580,7 @@ const CardListing = () => {
                       Enter My Spends
                     </Button>
                   </div>
-                </div>
-              )}
+                </div>}
 
               {/* Mobile Filter Button */}
               <div className="lg:hidden mb-4 flex items-center justify-between">
