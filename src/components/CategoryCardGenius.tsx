@@ -392,10 +392,7 @@ const CategoryCardGenius = () => {
       <div className="container mx-auto px-4">
         {/* Header - Always visible */}
         <div className="text-center mb-12 my-0 py-0">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4">
-            <Sparkles className="w-4 h-4" />
-            <span className="text-sm font-semibold">Smart Card Calculator</span>
-          </div>
+          
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Find Best Cards by Category
           </h2>
