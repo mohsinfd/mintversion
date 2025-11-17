@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { cardService } from "@/services/cardService";
 import { Button } from "./ui/button";
@@ -6,6 +6,11 @@ import { Badge } from "./ui/badge";
 import { Star } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { openRedirectInterstitial, extractBankName, extractBankLogo } from "@/utils/redirectHandler";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 const categories = {
   editor: {
     title: "Editor's Choice",
@@ -33,6 +38,8 @@ const PopularCreditCards = () => {
   const [cards, setCards] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('editor');
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const fetchCards = async () => {
       const allCards: any = {};
@@ -53,8 +60,34 @@ const PopularCreditCards = () => {
     };
     fetchCards();
   }, []);
+
+  useGSAP(() => {
+    if (!sectionRef.current || !cardsRef.current) return;
+
+    const cardElements = cardsRef.current.querySelectorAll('.popular-card');
+    
+    gsap.fromTo(cardElements, {
+      y: 60,
+      opacity: 0,
+      scale: 0.9
+    }, {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: "power3.out",
+      force3D: true,
+      scrollTrigger: {
+        trigger: cardsRef.current,
+        start: "top 85%",
+        end: "top 50%",
+        toggleActions: "play none none reverse"
+      }
+    });
+  }, { scope: sectionRef, dependencies: [activeTab, loading] });
   if (loading) {
-    return <section className="py-20 bg-muted/30">
+  return <section ref={sectionRef} className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center">
             <div className="animate-pulse">Loading popular cards...</div>
@@ -79,10 +112,10 @@ const PopularCreditCards = () => {
           </TabsList>
 
           {Object.entries(categories).map(([key, category]) => <TabsContent key={key} value={key} className="mt-0">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div ref={cardsRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {cards[key]?.map((card: any, index: number) => {
               const topUsps = card.product_usps?.filter((usp: any) => usp.priority <= 2).sort((a: any, b: any) => a.priority - b.priority).slice(0, 2) || [];
-              return <div key={card.id || index} className="bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group flex flex-col h-full">
+              return <div key={card.id || index} className="popular-card bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group flex flex-col h-full">
                       {/* Card Image */}
                       <div className="relative h-64 overflow-hidden bg-gradient-to-br from-muted to-muted/50 flex-shrink-0">
                         <img src={card.card_bg_image} alt={card.name} className="w-full h-full object-contain p-8 group-hover:scale-105 transition-transform duration-500" />

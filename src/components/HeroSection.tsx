@@ -3,19 +3,26 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { CreditCard3D } from "./CreditCard3D";
 import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sparkles, CreditCard } from "lucide-react";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 const HeroSection = () => {
   const navigate = useNavigate();
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const subheadlineRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  const floatingElementsRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
     const timeline = gsap.timeline({
       defaults: {
         ease: "power3.out",
         force3D: true
       }
     });
+
     timeline.from(headlineRef.current, {
       y: 60,
       opacity: 0,
@@ -26,15 +33,34 @@ const HeroSection = () => {
       duration: 0.8
     }, "-=0.6");
 
+    // Parallax effect for floating background elements
+    if (floatingElementsRef.current) {
+      const floatingCircles = floatingElementsRef.current.querySelectorAll('.floating-circle');
+      
+      floatingCircles.forEach((circle, index) => {
+        gsap.to(circle, {
+          y: -100 - (index * 30),
+          scrollTrigger: {
+            trigger: floatingElementsRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.5,
+            invalidateOnRefresh: true
+          }
+        });
+      });
+    }
+
     return () => {
       timeline.kill();
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero pt-20">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Animated Background Elements with Parallax */}
+      <div ref={floatingElementsRef} className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Floating circles */}
-        {[...Array(5)].map((_, i) => <div key={i} className="absolute rounded-full bg-primary/5 animate-float" style={{
+        {[...Array(5)].map((_, i) => <div key={i} className="floating-circle absolute rounded-full bg-primary/5 animate-float" style={{
         width: `${Math.random() * 300 + 100}px`,
         height: `${Math.random() * 300 + 100}px`,
         left: `${Math.random() * 100}%`,

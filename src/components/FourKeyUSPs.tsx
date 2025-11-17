@@ -83,7 +83,7 @@ const FourKeyUSPs = () => {
       icon: CardWithTags,
       iconColor: "bg-blue-500",
       title: "AI Category Card Genius",
-      description: "Pick your favorite spending category, answer just a few quick questions, and let our AI find the perfect card that matches exactly what you need",
+      description: "Pick your spending category, answer a few questions, and discover the card that's perfect for you",
       cta: "Get Started",
       redirect: "/card-genius-category"
     },
@@ -91,7 +91,7 @@ const FourKeyUSPs = () => {
       icon: MagicWandSparkles,
       iconColor: "bg-purple-500",
       title: "AI Super Card Genius",
-      description: "Take our comprehensive 19-question quiz and discover personalized card recommendations ranked by how much you'll actually save each year",
+      description: "Take our 19-question quiz and get recommendations ranked by your actual savings potential",
       cta: "Get Started",
       redirect: "/card-genius"
     },
@@ -99,7 +99,7 @@ const FourKeyUSPs = () => {
       icon: Target,
       iconColor: "bg-green-500",
       title: "Beat My Card",
-      description: "Already have a credit card? Let's compare it with better options based on how you actually spend your money and help you save even more",
+      description: "Already have a card? Let's find you better options based on how you actually spend",
       cta: "Get Started",
       redirect: "/beat-my-card"
     },
@@ -107,7 +107,7 @@ const FourKeyUSPs = () => {
       icon: StackedCards,
       iconColor: "bg-orange-500",
       title: "Browse All Cards",
-      description: "Dive into our complete collection of credit cards with side-by-side comparisons, detailed breakdowns, and honest reviews from real users",
+      description: "Explore our complete collection with detailed comparisons and honest user reviews",
       cta: "Get Started",
       redirect: "/cards"
     }
