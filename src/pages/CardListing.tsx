@@ -170,6 +170,17 @@ const CardListing = () => {
           });
         }
       }
+
+      // 4) Sort by priority when a category is selected
+      if (filters.category && filters.category !== 'all') {
+        incomingCards.sort((a: any, b: any) => {
+          const categorySlug = categoryToSlug[filters.category];
+          const aPriority = a.category_priority?.[categorySlug] ?? a.priority ?? 999999;
+          const bPriority = b.category_priority?.[categorySlug] ?? b.priority ?? 999999;
+          return Number(aPriority) - Number(bPriority);
+        });
+      }
+
       setCards(Array.isArray(incomingCards) ? incomingCards : []);
     } catch (error) {
       console.error('Failed to fetch cards:', error);
@@ -483,8 +494,8 @@ const CardListing = () => {
       <section className="pt-28 pb-12 bg-gradient-hero">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-10">
-            <h1 className="text-4xl xl:text-6xl font-bold whitespace-nowrap overflow-hidden text-ellipsis lg:text-3xl">
-              Discover India's Best Credit Cards
+            <h1 className="text-3xl md:text-4xl lg:text-[2.75rem] xl:text-5xl font-bold text-foreground leading-tight">
+              Discover India's Best Credit&nbsp;Cards
             </h1>
           </div>
           
@@ -562,25 +573,36 @@ const CardListing = () => {
               </div>
 
               {/* AI Card Genius Promo - Show only when category is selected (not "All Cards") */}
-              {filters.category !== 'all' && <div className="mb-6 bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20 rounded-xl p-4">
-                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 flex-1">
-                      <Sparkles className="h-5 w-5 text-primary flex-shrink-0" />
-                      <div>
-                        <h3 className="text-base font-semibold text-foreground mb-0.5">
-                          Pro Tip: Try our AI Card Genius
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          See your total yearly savings and find the best card for your spending.
-                        </p>
+              {filters.category !== 'all' && (() => {
+                const categoryLabels: Record<string, string> = {
+                  'fuel': 'Fuel',
+                  'shopping': 'Shopping',
+                  'online-food': 'Food Delivery',
+                  'dining': 'Dining',
+                  'grocery': 'Grocery',
+                  'travel': 'Travel',
+                  'utility': 'Utility'
+                };
+                const categoryName = categoryLabels[filters.category] || 'Category';
+                return <div className="mb-4 bg-emerald-50/40 dark:bg-emerald-950/10 border border-emerald-200/60 dark:border-emerald-800/30 rounded-xl p-3">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5 flex-1">
+                        <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-500 flex-shrink-0" />
+                        <div>
+                          <h3 className="text-sm font-semibold text-foreground">
+                            Pro Tip: Try our AI Card Genius
+                          </h3>
+                          <p className="text-xs text-muted-foreground">
+                            Exploring {categoryName} cards? See your yearly savings instantly.
+                          </p>
+                        </div>
                       </div>
+                      <Button onClick={() => setShowGeniusDialog(true)} size="sm" className="whitespace-nowrap bg-emerald-600 hover:bg-emerald-700 text-white h-9 px-4">
+                        Enter My Spends
+                      </Button>
                     </div>
-                    <Button onClick={() => setShowGeniusDialog(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground whitespace-nowrap gap-2 flex-shrink-0">
-                      <Sparkles className="w-4 h-4" />
-                      Enter My Spends
-                    </Button>
-                  </div>
-                </div>}
+                  </div>;
+              })()}
 
               {/* Mobile Filter Button */}
               <div className="lg:hidden mb-4 flex items-center justify-between">
