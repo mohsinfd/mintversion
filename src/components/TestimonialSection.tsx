@@ -130,7 +130,7 @@ const TestimonialSection = () => {
             <Star className="w-4 h-4 fill-current" />
             <span className="text-sm font-semibold">Real Stories, Real Savings</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent my-0">
             Smart Indians Are Already Saving
           </h2>
           <p className="text-xl text-muted-foreground">
