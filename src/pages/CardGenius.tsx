@@ -740,10 +740,7 @@ const CardGenius = () => {
         <Navigation />
         <header className="sticky top-16 bg-white border-b border-border z-50">
           <div className="container mx-auto px-4 py-4">
-            <button onClick={() => navigate('/')} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-              <span className="font-semibold">Back to Home</span>
-            </button>
+            
           </div>
         </header>
 
