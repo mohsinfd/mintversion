@@ -624,30 +624,16 @@ const BeatMyCard = () => {
             {/* Navigation buttons */}
             <div className="flex flex-col items-center gap-3 mt-8">
               <div className="flex items-center justify-between w-full gap-4">
-                <Button 
-                  variant="outline" 
-                  onClick={handlePrev} 
-                  disabled={currentStep === 0} 
-                  className="rounded-full border-2 border-muted-foreground/20 bg-background hover:bg-muted/50 text-muted-foreground px-8 h-12 transition-all duration-200"
-                >
+                <Button variant="outline" onClick={handlePrev} disabled={currentStep === 0} className="rounded-full border-2 border-muted-foreground/20 bg-background hover:bg-muted/50 text-muted-foreground px-8 h-12 transition-all duration-200">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Previous
                 </Button>
                 
-                <Button 
-                  variant="ghost" 
-                  onClick={handleSkipAll} 
-                  disabled={isCalculating} 
-                  className="text-foreground hover:text-foreground/80 font-semibold text-base px-0"
-                >
+                <Button variant="ghost" onClick={handleSkipAll} disabled={isCalculating} className="text-foreground hover:text-foreground/80 font-semibold text-base px-0">
                   {isCalculating ? "Calculating..." : "Skip All"}
                 </Button>
 
-                <Button 
-                  onClick={handleNext} 
-                  disabled={isCalculating} 
-                  className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-8 h-12 shadow-md hover:shadow-lg transition-all duration-200"
-                >
+                <Button onClick={handleNext} disabled={isCalculating} className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-8 h-12 shadow-md hover:shadow-lg transition-all duration-200">
                   {isCalculating ? <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Calculating...
@@ -661,11 +647,7 @@ const BeatMyCard = () => {
                 </Button>
               </div>
 
-              <Button 
-                variant="ghost" 
-                onClick={handleSkip} 
-                className="text-sm text-muted-foreground hover:text-muted-foreground/80 px-0 h-auto"
-              >
+              <Button variant="ghost" onClick={handleSkip} className="text-sm text-muted-foreground hover:text-muted-foreground/80 px-0 h-auto">
                 Skip this question →
               </Button>
             </div>
@@ -686,21 +668,17 @@ const BeatMyCard = () => {
         <div className="container mx-auto px-4 py-8">
           {/* Header with Navigation Buttons */}
           <div className="flex items-center justify-between mb-8">
-            <Button variant="ghost" onClick={() => navigate('/')} className="gap-2 hover:bg-primary/10">
-              <Home className="h-4 w-4" />
-              <span className="hidden sm:inline">Home</span>
-            </Button>
             
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setStep('select');
-                setCurrentStep(0);
-                setResponses({});
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }} 
-              className="gap-2 hover:bg-secondary/10 border-secondary/30 text-secondary hover:border-secondary"
-            >
+            
+            <Button variant="outline" onClick={() => {
+              setStep('select');
+              setCurrentStep(0);
+              setResponses({});
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
+            }} className="gap-2 hover:bg-secondary/10 border-secondary/30 text-secondary hover:border-secondary">
               <ArrowLeft className="h-4 w-4" />
               Change Card Selection
             </Button>
@@ -755,13 +733,10 @@ const BeatMyCard = () => {
                     <span className="text-base font-bold text-foreground">₹{userCardData.annual_saving?.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="relative h-12 bg-muted rounded-lg overflow-hidden">
-                    <div 
-                      className="absolute left-0 top-0 h-full bg-primary rounded-lg transition-all duration-500 flex items-center justify-center"
-                      style={{ 
-                        width: `${maxSavings > 0 ? Math.max(userCardData.annual_saving / maxSavings * 100, 15) : 15}%`,
-                        minWidth: '60px'
-                      }}
-                    >
+                    <div className="absolute left-0 top-0 h-full bg-primary rounded-lg transition-all duration-500 flex items-center justify-center" style={{
+                      width: `${maxSavings > 0 ? Math.max(userCardData.annual_saving / maxSavings * 100, 15) : 15}%`,
+                      minWidth: '60px'
+                    }}>
                       <span className="text-sm font-bold text-primary-foreground">
                         {maxSavings > 0 ? Math.round(userCardData.annual_saving / maxSavings * 100) : 0}%
                       </span>
@@ -781,10 +756,9 @@ const BeatMyCard = () => {
                     <span className="text-base font-bold text-blue-600 dark:text-blue-400">₹{geniusCardData.annual_saving?.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="relative h-12 bg-muted rounded-lg overflow-hidden">
-                    <div 
-                      className="absolute left-0 top-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg transition-all duration-500 flex items-center justify-center"
-                      style={{ width: '100%' }}
-                    >
+                    <div className="absolute left-0 top-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg transition-all duration-500 flex items-center justify-center" style={{
+                      width: '100%'
+                    }}>
                       <span className="text-sm font-bold text-white">
                         100%
                       </span>
