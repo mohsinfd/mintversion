@@ -352,10 +352,9 @@ const CardGenius = () => {
             const welcomeBenefits = saving.welcomeBenefits || cardDetails.data?.welcomeBenefits || saving.welcome_benefits || cardDetails.data?.welcome_benefits || [];
             const joiningFees = parseInt(saving.joining_fees) || 0;
             const totalSavingsYearly = saving.total_savings_yearly || 0;
-            const totalExtraBenefits = saving.total_extra_benefits || 0;
-            // Add lounge value to milestone benefits
-            const totalExtraBenefitsWithLounges = totalExtraBenefits + totalLoungeValue;
-            const netSavings = totalSavingsYearly + totalExtraBenefitsWithLounges - joiningFees;
+            const milestoneOnly = saving.total_extra_benefits || 0;
+            // Calculate net savings with the new formula: Total Savings + Milestones + Airport Lounges - Joining Fee
+            const netSavings = totalSavingsYearly + milestoneOnly + totalLoungeValue - joiningFees;
             return {
               card_name: cardDetails.data?.card_name || saving.card_name || saving.card_alias,
               card_bg_image: cardBgImage,
@@ -363,8 +362,8 @@ const CardGenius = () => {
               joining_fees: joiningFees,
               total_savings: saving.total_savings || 0,
               total_savings_yearly: totalSavingsYearly,
-              total_extra_benefits: totalExtraBenefitsWithLounges,
-              milestone_benefits_only: totalExtraBenefits,
+              total_extra_benefits: milestoneOnly,
+              milestone_benefits_only: milestoneOnly,
               airport_lounge_value: totalLoungeValue,
               net_savings: netSavings,
               voucher_of: saving.voucher_of || 0,
@@ -376,9 +375,8 @@ const CardGenius = () => {
             console.error(`Error processing card ${saving.card_alias || saving.card_name}:`, error);
             const joiningFees = parseInt(saving.joining_fees) || 0;
             const totalSavingsYearly = saving.total_savings_yearly || 0;
-            const totalExtraBenefits = saving.total_extra_benefits || 0;
-            const totalExtraBenefitsWithLounges = totalExtraBenefits + totalLoungeValue;
-            const netSavings = totalSavingsYearly + totalExtraBenefitsWithLounges - joiningFees;
+            const milestoneOnly = saving.total_extra_benefits || 0;
+            const netSavings = totalSavingsYearly + milestoneOnly + totalLoungeValue - joiningFees;
             return {
               card_name: saving.card_name || saving.card_alias,
               card_bg_image: saving.card_bg_image || '',
@@ -386,8 +384,8 @@ const CardGenius = () => {
               joining_fees: joiningFees,
               total_savings: saving.total_savings || 0,
               total_savings_yearly: totalSavingsYearly,
-              total_extra_benefits: totalExtraBenefitsWithLounges,
-              milestone_benefits_only: totalExtraBenefits,
+              total_extra_benefits: milestoneOnly,
+              milestone_benefits_only: milestoneOnly,
               airport_lounge_value: totalLoungeValue,
               net_savings: netSavings,
               voucher_of: saving.voucher_of || 0,
@@ -816,9 +814,9 @@ const CardGenius = () => {
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="pincode">Pincode</Label>
-                    <Input id="pincode" type="text" placeholder="Enter your pincode" value={eligibilityData.pincode} onChange={e => setEligibilityData({
+                    <Input id="pincode" type="text" inputMode="numeric" placeholder="Enter your pincode" value={eligibilityData.pincode} onChange={e => setEligibilityData({
                     ...eligibilityData,
-                    pincode: e.target.value
+                    pincode: e.target.value.replace(/\D/g, '')
                   })} maxLength={6} />
                   </div>
                   <div>
@@ -923,7 +921,23 @@ const CardGenius = () => {
                                   <Info className="w-4 h-4 text-muted-foreground cursor-help" />
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-xs">
-                                  <p>Additional benefits like vouchers, reward points, or perks earned by achieving spending milestones (includes airport lounge value)</p>
+                                  <p>Additional benefits like vouchers, reward points, or perks earned by achieving spending milestones</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </th>
+                          <th className="text-center p-2 font-semibold text-sm text-muted-foreground w-8">
+                            <span className="text-2xl">+</span>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-foreground min-w-[140px]">
+                            <div className="flex items-center justify-center gap-1">
+                              Airport Lounges
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <p>Estimated value of domestic and international lounge access (₹750 per domestic, ₹1250 per international)</p>
                                 </TooltipContent>
                               </Tooltip>
                             </div>
@@ -952,23 +966,10 @@ const CardGenius = () => {
                               Net Savings
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                              <Info className="w-4 h-4 text-muted-foreground cursor-help" />
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-xs">
-                                  <p>Your actual profit calculated as: Total Savings + Milestone Benefits - Joining Fees</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </div>
-                          </th>
-                          <th className="text-center p-4 font-semibold text-sm text-foreground min-w-[140px]">
-                            <div className="flex items-center justify-center gap-1">
-                              Airport Lounges
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-xs">
-                                  <p>Estimated value of domestic and international lounge access (₹750 per domestic, ₹1250 per international)</p>
+                                  <p>Your actual profit calculated as: Total Savings + Milestones + Airport Lounges - Joining Fees</p>
                                 </TooltipContent>
                               </Tooltip>
                             </div>
@@ -1110,7 +1111,23 @@ const CardGenius = () => {
                                   <Info className="w-4 h-4 text-muted-foreground cursor-help" />
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-xs">
-                                  <p>Additional benefits like vouchers, reward points, or perks earned by achieving spending milestones (includes airport lounge value)</p>
+                                  <p>Additional benefits like vouchers, reward points, or perks earned by achieving spending milestones</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-muted-foreground w-12">
+                            <span className="text-2xl">+</span>
+                          </th>
+                          <th className="text-center p-4 font-semibold text-sm text-foreground min-w-[140px]">
+                            <div className="flex items-center justify-center gap-1">
+                              Airport Lounges
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <p>Estimated value of domestic and international lounge access (₹750 per domestic, ₹1250 per international)</p>
                                 </TooltipContent>
                               </Tooltip>
                             </div>
@@ -1139,23 +1156,10 @@ const CardGenius = () => {
                               Net Savings
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                              <Info className="w-4 h-4 text-muted-foreground cursor-help" />
                                 </TooltipTrigger>
                                 <TooltipContent className="max-w-xs">
-                                  <p>Your actual profit calculated as: Total Savings + Milestone Benefits - Joining Fees</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </div>
-                          </th>
-                          <th className="text-center p-4 font-semibold text-sm text-foreground min-w-[140px]">
-                            <div className="flex items-center justify-center gap-1">
-                              Airport Lounges
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-xs">
-                                  <p>Estimated value of domestic and international lounge access (₹750 per domestic, ₹1250 per international)</p>
+                                  <p>Your actual profit calculated as: Total Savings + Milestones + Airport Lounges - Joining Fees</p>
                                 </TooltipContent>
                               </Tooltip>
                             </div>
@@ -1191,15 +1195,16 @@ const CardGenius = () => {
                                 ₹{card.joining_fees.toLocaleString()}
                               </td>
                               <td className="p-4"></td>
-                              <td className="p-4 text-center">
-                                <span className="font-bold text-lg text-green-700">
-                                  ₹{card.net_savings.toLocaleString()}
-                                </span>
-                              </td>
                               <td className="p-4 text-center font-semibold text-purple-600">
                                 {card.airport_lounge_value && card.airport_lounge_value > 0 
                                   ? `₹${card.airport_lounge_value.toLocaleString()}`
                                   : '—'}
+                              </td>
+                              <td className="p-4"></td>
+                              <td className="p-4 text-center">
+                                <span className="font-bold text-lg text-green-700">
+                                  ₹{card.net_savings.toLocaleString()}
+                                </span>
                               </td>
                             </>}
                           
@@ -1228,15 +1233,16 @@ const CardGenius = () => {
                                 ₹{card.joining_fees.toLocaleString()}
                               </td>
                               <td className="p-4"></td>
-                              <td className="p-4 text-center">
-                                <span className="font-bold text-lg text-green-700">
-                                  ₹{card.net_savings.toLocaleString()}
-                                </span>
-                              </td>
                               <td className="p-4 text-center font-semibold text-purple-600">
                                 {card.airport_lounge_value && card.airport_lounge_value > 0 
                                   ? `₹${card.airport_lounge_value.toLocaleString()}`
                                   : '—'}
+                              </td>
+                              <td className="p-4"></td>
+                              <td className="p-4 text-center">
+                                <span className="font-bold text-lg text-green-700">
+                                  ₹{card.net_savings.toLocaleString()}
+                                </span>
                               </td>
                             </>}
                         </tr>;
