@@ -1236,12 +1236,6 @@ const CardGenius = () => {
                                 ₹{card.joining_fees.toLocaleString()}
                               </td>
                               <td className="p-4"></td>
-                              <td className="p-4 text-center font-semibold text-purple-600">
-                                {card.airport_lounge_value && card.airport_lounge_value > 0 
-                                  ? `₹${card.airport_lounge_value.toLocaleString()}`
-                                  : '—'}
-                              </td>
-                              <td className="p-4"></td>
                               <td className="p-4 text-center">
                                 <span className="font-bold text-lg text-green-600">
                                   ₹{card.net_savings.toLocaleString()}
