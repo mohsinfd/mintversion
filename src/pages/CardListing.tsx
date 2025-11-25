@@ -596,10 +596,10 @@ const CardListing = () => {
                 'utility': 'Utility'
               };
               const categoryName = categoryLabels[filters.category] || 'Category';
-              return <div className="mb-4 bg-emerald-50/40 dark:bg-emerald-950/10 border border-emerald-200/60 dark:border-emerald-800/30 rounded-xl p-3">
+              return <div className="mb-4 bg-orange-50/40 dark:bg-orange-950/10 border border-orange-200/60 dark:border-orange-800/30 rounded-xl p-3">
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
                       <div className="flex items-center gap-2.5 flex-1">
-                        <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-500 flex-shrink-0" />
+                        <Sparkles className="h-4 w-4 text-primary dark:text-primary flex-shrink-0" />
                         <div>
                           <h3 className="text-sm font-semibold text-foreground">
                             Pro Tip: Try our AI Card Genius
@@ -609,7 +609,7 @@ const CardListing = () => {
                           </p>
                         </div>
                       </div>
-                      <Button onClick={() => setShowGeniusDialog(true)} size="sm" className="whitespace-nowrap bg-emerald-600 hover:bg-emerald-700 text-white h-9 px-4">
+                      <Button onClick={() => setShowGeniusDialog(true)} size="sm" className="whitespace-nowrap bg-primary hover:bg-orange-700 text-white h-9 px-4">
                         Enter My Spends
                       </Button>
                     </div>
@@ -686,7 +686,7 @@ const CardListing = () => {
                       Credit Score: {filters.credit_score}
                       <X className="w-3 h-3 cursor-pointer" onClick={() => handleFilterChange('credit_score', '')} />
                     </Badge>}
-                  {eligibilitySubmitted && <Badge variant="secondary" className="gap-2 bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border-emerald-300 dark:border-emerald-700">
+                  {eligibilitySubmitted && <Badge variant="secondary" className="gap-2 bg-success-50 dark:bg-success-700/20 text-success-700 dark:text-success-500 border-success-500/30 dark:border-success-700">
                       <CheckCircle2 className="w-3 h-3" />
                       Eligibility Applied
                       <X className="w-3 h-3 cursor-pointer" onClick={async () => {
@@ -754,7 +754,7 @@ const CardListing = () => {
                       const categorySavings = cardSavings[filters.category] || {};
                       const saving = categorySavings[String(card.id)] ?? categorySavings[String(card.seo_card_alias || card.card_alias || '')];
                       return !saving && (card.joining_fee_text === "0" || card.joining_fee_text?.toLowerCase?.() === "free");
-                    })() && <Badge className="absolute bottom-3 right-3 bg-green-500 gap-1 z-10">
+                    })() && <Badge className="absolute bottom-3 right-3 bg-success-500 gap-1 z-10">
                               <CheckCircle2 className="w-3 h-3" />
                               Eligible
                             </Badge>}
