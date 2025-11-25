@@ -13,7 +13,49 @@ const BlogPost = () => {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [slug]);
+    
+    // Update meta tags for SEO
+    if (blog) {
+      document.title = `${blog.title} | Mint Cards`;
+      
+      // Update meta description
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', blog.excerpt);
+      }
+      
+      // Update OG tags
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) {
+        ogTitle.setAttribute('content', `${blog.title} | Mint Cards`);
+      }
+      
+      const ogDescription = document.querySelector('meta[property="og:description"]');
+      if (ogDescription) {
+        ogDescription.setAttribute('content', blog.excerpt);
+      }
+      
+      // Update Twitter tags
+      const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+      if (twitterTitle) {
+        twitterTitle.setAttribute('content', `${blog.title} | Mint Cards`);
+      }
+      
+      const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+      if (twitterDescription) {
+        twitterDescription.setAttribute('content', blog.excerpt);
+      }
+    }
+    
+    // Cleanup: Reset to default on unmount
+    return () => {
+      document.title = 'Mint Cards - Find Your Perfect Credit Card in 4 Easy Ways';
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', 'Discover your ideal credit card with Mint. Compare 100+ cards by category, use AI-powered Card Genius, beat your current card, or browse all options. Free, smart, and unbiased recommendations.');
+      }
+    };
+  }, [slug, blog]);
 
   if (!blog) {
     return (
